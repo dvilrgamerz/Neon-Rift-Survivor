@@ -1,0 +1,24 @@
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#050712;color:#fff;font-family:Inter,system-ui,Arial,sans-serif}
+body{background:radial-gradient(circle at top,#101938 0,#050712 48%,#02030a 100%)}
+canvas{display:block;width:100%;height:100%;touch-action:none}
+.hud{position:fixed;inset:0;pointer-events:none}
+.top{display:flex;gap:12px;justify-content:center;padding:14px}
+.pill{background:#0b1024cc;border:1px solid #43e8ff55;border-radius:999px;padding:8px 14px;font-weight:800;box-shadow:0 0 18px #00d9ff22;backdrop-filter:blur(10px)}
+.hp{position:absolute;left:18px;right:18px;bottom:20px;height:13px;border:1px solid #fff4;border-radius:9px;background:#111827;overflow:hidden}
+.hp i{display:block;height:100%;border-radius:9px;background:linear-gradient(90deg,#ff315f,#ff8a5b);transition:width .12s linear}
+.xp{position:absolute;left:0;right:0;top:0;height:5px;background:#151a30}
+.xp i{display:block;height:100%;background:linear-gradient(90deg,#18e4ff,#a94cff);transition:width .12s linear}
+.overlay{position:fixed;inset:0;display:grid;place-items:center;background:#02040be8;padding:20px;backdrop-filter:blur(8px)}
+.card{width:min(680px,94vw);background:linear-gradient(180deg,#0d1430,#080d1f);border:1px solid #42e9ff55;border-radius:24px;padding:30px;text-align:center;box-shadow:0 0 60px #00d9ff18}
+.logo{font-size:clamp(35px,7vw,64px);font-weight:1000;letter-spacing:-3px;line-height:.95}
+.logo span{color:#43e8ff;text-shadow:0 0 24px #43e8ff66}
+.sub{color:#a9b5d6;line-height:1.6}
+.btn{pointer-events:auto;border:0;border-radius:14px;padding:14px 25px;background:linear-gradient(135deg,#21dfff,#8b5cff);color:white;font-weight:900;font-size:17px;cursor:pointer;box-shadow:0 12px 35px #4b68ff33;transition:transform .18s ease,filter .18s ease}
+.btn:hover{transform:translateY(-2px);filter:brightness(1.08)}
+.choices{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:18px 0}
+.choice{pointer-events:auto;background:#111a35;border:1px solid #5deaff55;color:#fff;padding:18px 10px;border-radius:15px;cursor:pointer;transition:transform .16s ease,border-color .16s ease,background .16s ease}
+.choice:hover{transform:translateY(-3px);border-color:#5deaff;background:#162143}
+.choice b{display:block;color:#5deaff;margin-bottom:7px;font-size:16px}
+.hide{display:none}
+@media(max-width:600px){.choices{grid-template-columns:1fr}.top{justify-content:flex-start;flex-wrap:wrap;padding:10px}.pill{padding:6px 10px;font-size:13px}.card{padding:22px}.hp{bottom:12px;left:12px;right:12px}}
