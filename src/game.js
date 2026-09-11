@@ -16,7 +16,13 @@ let keys={},running=false,paused=false,last=0,t=0,kills=0,level=1,xp=0,need=10;
 let enemies=[],bullets=[],gems=[],particles=[],zones=[],mines=[],spawn=0,shot=0,bossAt=60;
 let owned={},levels={},evolved={},evoBanner='',evoBannerTime=0;
 let timers={boomerang:0,brick:0,drill:0,durian:0,laser:0,lightning:0,mine:0,molotov:0,slash:0,rpg:0,soccer:0};
-let best=+localStorage.neonBest||0;ui.best.textContent=best;
+function storageGet(key,fallback=null){
+  try{const v=localStorage.getItem(key);return v===null?fallback:v}catch(e){return fallback}
+}
+function storageSet(key,value){
+  try{localStorage.setItem(key,value)}catch(e){}
+}
+let best=+storageGet('neonBest',0)||0;ui.best.textContent=best;
 
 const difficultyPresets={
   easy:{label:'EASY',short:'EASY',desc:'Relaxed survival: weaker, slower enemies and more XP.',enemyHp:.72,enemySpeed:.86,spawnRate:.8,bossPower:.75,playerDamage:1.2,xpGain:1.25,startHp:140,doubleBosses:false},
@@ -24,8 +30,15 @@ const difficultyPresets={
   nightmare:{label:'NIGHTMARE',short:'NIGHT',desc:'Much tougher enemies, faster spawns, stronger bosses, better XP.',enemyHp:1.7,enemySpeed:1.2,spawnRate:1.35,bossPower:1.7,playerDamage:.95,xpGain:1.2,startHp:90,doubleBosses:false},
   impossible:{label:'IMPOSSIBLE',short:'IMP',desc:'Extreme mode: brutal scaling, fast swarms, and double bosses.',enemyHp:2.5,enemySpeed:1.4,spawnRate:1.75,bossPower:2.4,playerDamage:.85,xpGain:1.35,startHp:80,doubleBosses:true}
 };
-let selectedMode=localStorage.neonMode||'standard';
-let customDifficulty=JSON.parse(localStorage.neonCustomDifficulty||'null')||{enemyHp:1,enemySpeed:1,spawnRate:1,bossPower:1,playerDamage:1,xpGain:1,startHp:100,doubleBosses:false};
+let selectedMode=storageGet('neonMode','standard');
+if(!['easy','standard','nightmare','impossible','custom'].includes(selectedMode))selectedMode='standard';
+let customDifficulty;
+try{
+  customDifficulty=JSON.parse(storageGet('neonCustomDifficulty','null'));
+}catch(e){
+  customDifficulty=null;
+}
+customDifficulty=customDifficulty||{enemyHp:1,enemySpeed:1,spawnRate:1,bossPower:1,playerDamage:1,xpGain:1,startHp:100,doubleBosses:false};
 let difficulty={...difficultyPresets.standard};
 
 let p={};
@@ -64,7 +77,7 @@ document.querySelector('#again').onclick=reset;
 
 function syncModeUI(){
   difficulty=getDifficulty();
-  if(ui.modeLabel)ui.modeLabel.textContent=difficulty.label;
+  if(ui.modeLabel)ui.modeLabel.textContent='SELECTED: '+difficulty.label;
   if(ui.modeDesc)ui.modeDesc.textContent=selectedMode==='custom'
     ? 'Custom active • Enemy HP '+difficulty.enemyHp+'x • Speed '+difficulty.enemySpeed+'x • Spawn '+difficulty.spawnRate+'x • Boss '+difficulty.bossPower+'x • Damage '+difficulty.playerDamage+'x • XP '+difficulty.xpGain+'x • HP '+difficulty.startHp
     : difficulty.desc;
@@ -75,10 +88,20 @@ function syncModeUI(){
 function selectMode(mode){
   if(!['easy','standard','nightmare','impossible','custom'].includes(mode))return;
   selectedMode=mode;
-  localStorage.setItem('neonMode',mode);
+  storageSet('neonMode',mode);
   syncModeUI();
 }
-document.querySelectorAll('.mode-btn').forEach(b=>b.addEventListener('click',()=>selectMode(b.dataset.mode)));
+document.querySelectorAll('.mode-btn').forEach(b=>{
+  b.type='button';
+  b.onclick=(ev)=>{ev.preventDefault();ev.stopPropagation();selectMode(b.dataset.mode)};
+});
+const modeGrid=document.querySelector('.mode-grid');
+if(modeGrid){
+  modeGrid.addEventListener('click',ev=>{
+    const b=ev.target.closest('.mode-btn');
+    if(b)selectMode(b.dataset.mode);
+  });
+}
 const customFields=[
   ['enemyHp','enemyHpVal','x'],['enemySpeed','enemySpeedVal','x'],['spawnRate','spawnRateVal','x'],
   ['bossPower','bossPowerVal','x'],['playerDamage','playerDamageVal','x'],['xpGain','xpGainVal','x'],['startHp','startHpVal','']
@@ -90,16 +113,16 @@ customFields.forEach(([id,val,suffix])=>{
   out.textContent=customDifficulty[id]+suffix;
   el.addEventListener('input',()=>{
     customDifficulty[id]=+el.value;out.textContent=el.value+suffix;
-    localStorage.setItem('neonCustomDifficulty',JSON.stringify(customDifficulty));
+    storageSet('neonCustomDifficulty',JSON.stringify(customDifficulty));
     if(selectedMode==='custom')syncModeUI()
   })
 });
 const dbl=document.querySelector('#doubleBosses');
-if(dbl){dbl.checked=!!customDifficulty.doubleBosses;dbl.addEventListener('change',()=>{customDifficulty.doubleBosses=dbl.checked;localStorage.setItem('neonCustomDifficulty',JSON.stringify(customDifficulty));syncModeUI()})}
+if(dbl){dbl.checked=!!customDifficulty.doubleBosses;dbl.addEventListener('change',()=>{customDifficulty.doubleBosses=dbl.checked;storageSet('neonCustomDifficulty',JSON.stringify(customDifficulty));syncModeUI()})}
 const resetCustom=document.querySelector('#resetCustom');
 if(resetCustom)resetCustom.onclick=()=>{
   customDifficulty={enemyHp:1,enemySpeed:1,spawnRate:1,bossPower:1,playerDamage:1,xpGain:1,startHp:100,doubleBosses:false};
-  localStorage.setItem('neonCustomDifficulty',JSON.stringify(customDifficulty));
+  storageSet('neonCustomDifficulty',JSON.stringify(customDifficulty));
   customFields.forEach(([id,val,suffix])=>{const el=document.querySelector('#'+id),out=document.querySelector('#'+val);if(el){el.value=customDifficulty[id];out.textContent=customDifficulty[id]+suffix}});
   if(dbl)dbl.checked=false;syncModeUI();
 };
@@ -378,7 +401,7 @@ function update(dt){
   particles=particles.filter(q=>q.l>0);bullets=bullets.filter(b=>b.life>0);
 
   if(p.hp<=0){
-    running=false;best=Math.max(best,kills);localStorage.neonBest=best;ui.best.textContent=best;
+    running=false;best=Math.max(best,kills);storageSet('neonBest',best);ui.best.textContent=best;
     ui.score.textContent='Mode: '+difficulty.label+' • Kills: '+kills+' • Survived: '+fmt(t);ui.over.classList.remove('hide')
   }
 
