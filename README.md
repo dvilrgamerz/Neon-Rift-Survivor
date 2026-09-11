@@ -11,6 +11,9 @@ An original **browser-based neon survival / bullet-heaven game** built from scra
 [![JavaScript](https://img.shields.io/badge/JavaScript-Game%20Engine-F7DF1E?logo=javascript&logoColor=111)](https://developer.mozilla.org/docs/Web/JavaScript)
 [![Netlify](https://img.shields.io/badge/Deploy-Netlify-00C7B7?logo=netlify&logoColor=white)](https://www.netlify.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+![Difficulty](https://img.shields.io/badge/Game%20Modes-5-8B5CF6)
+![Mobile](https://img.shields.io/badge/Mobile-Touch%20Ready-22C55E)
+![Cost](https://img.shields.io/badge/Hosting-%240-00C7B7)
 
 </div>
 
@@ -24,6 +27,12 @@ The combat is designed around **automatic targeting and firing**, allowing the p
 
 > **Originality note:** this project is inspired by the general survivor / bullet-heaven genre. It does not use Survivor.io source code, artwork, characters, maps, branding, or proprietary assets.
 
+## 🔥 Current Build
+
+> **Difficulty Update:** Easy, Standard, Nightmare, Impossible, and fully configurable Custom mode are now playable.
+
+> **Combat Update:** Expanded Active + Passive skill system, EVO combinations, bosses, and **1.5× base EXP drops**.
+
 ## ✨ Features
 
 - ⚡ Automatic enemy targeting and shooting
@@ -35,7 +44,10 @@ The combat is designed around **automatic targeting and firing**, allowing the p
 - 🌀 Orbiting energy weapon upgrade
 - 🧲 Pickup magnet upgrades
 - ❤️ HP, healing, and survivability upgrades
-- 📈 Difficulty that increases during the run
+- 🎚️ Five selectable difficulty modes
+- 🛠️ Custom difficulty sliders for enemy HP, speed, spawn rate, boss power, player damage, XP, and starting HP
+- 💀 Optional double-boss modifier
+- 📈 Difficulty scaling during every run
 - ✨ Neon particles and glow effects
 - 📱 Mobile touch joystick
 - ⌨️ Keyboard controls
@@ -210,7 +222,11 @@ The best kill count is stored in the browser using:
 localStorage
 ```
 
-### 12. Prepare deployment
+### 12. Add game modes and custom balancing
+
+Difficulty presets modify real gameplay values such as enemy HP, movement speed, spawn frequency, boss strength, player damage, XP gain, and starting HP. Custom settings are stored locally in the browser.
+
+### 13. Prepare deployment
 
 The game is completely static, so it can be deployed directly on Netlify without Node.js, a server, or a database.
 
@@ -305,10 +321,11 @@ Potential V2 improvements:
 - [ ] Achievements
 - [ ] Sound effects and music controls
 - [ ] Multiple arenas
-- [ ] Difficulty modes
+- [x] Difficulty modes
 - [ ] PWA / offline installation
 - [ ] Online leaderboard
-- [ ] Settings menu
+- [x] Difficulty / game-mode settings
+- [ ] Full audio & accessibility settings
 - [ ] Gamepad support
 
 ## 🤝 Contributing
