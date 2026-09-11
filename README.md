@@ -43,6 +43,20 @@ The combat is designed around **automatic targeting and firing**, allowing the p
 - 🌐 No backend required
 - 💸 $0 hosting-ready on Netlify
 
+## 🎚️ Game Modes & Difficulty
+
+Neon Rift Survivor now includes five difficulty modes:
+
+| Mode | Gameplay |
+|---|---|
+| Easy | Lower enemy HP/speed, slower spawning, more player HP, more XP |
+| Standard | Balanced default experience |
+| Nightmare | Tougher/faster enemies, denser waves, stronger bosses |
+| Impossible | Extreme scaling, very fast waves, reduced player damage, double bosses |
+| Custom | Configure enemy HP, enemy speed, spawn rate, boss power, player damage, XP gain, starting HP, and double bosses |
+
+Custom difficulty settings are saved in the browser with `localStorage`, so your selected mode and custom values stay after refresh.
+
 ## 🕹️ Controls
 
 | Platform | Controls |
