@@ -7,7 +7,9 @@ const ui={
   hp:document.querySelector('#hp'),xp:document.querySelector('#xp'),lv:document.querySelector('#lv'),
   kills:document.querySelector('#kills'),time:document.querySelector('#time'),best:document.querySelector('#best'),
   start:document.querySelector('#start'),level:document.querySelector('#level'),over:document.querySelector('#over'),
-  choices:document.querySelector('#choices'),score:document.querySelector('#score')
+  choices:document.querySelector('#choices'),score:document.querySelector('#score'),
+  modeLabel:document.querySelector('#modeLabel'),modeDesc:document.querySelector('#modeDesc'),
+  customSettings:document.querySelector('#customSettings'),hudMode:document.querySelector('#hudMode')
 };
 
 let keys={},running=false,paused=false,last=0,t=0,kills=0,level=1,xp=0,need=10;
@@ -16,10 +18,25 @@ let owned={},levels={},evolved={},evoBanner='',evoBannerTime=0;
 let timers={boomerang:0,brick:0,drill:0,durian:0,laser:0,lightning:0,mine:0,molotov:0,slash:0,rpg:0,soccer:0};
 let best=+localStorage.neonBest||0;ui.best.textContent=best;
 
+const difficultyPresets={
+  easy:{label:'EASY',short:'EASY',desc:'Relaxed survival: weaker, slower enemies and more XP.',enemyHp:.72,enemySpeed:.86,spawnRate:.8,bossPower:.75,playerDamage:1.2,xpGain:1.25,startHp:140,doubleBosses:false},
+  standard:{label:'STANDARD',short:'STD',desc:'Balanced enemy strength, spawn rate, XP, and bosses.',enemyHp:1,enemySpeed:1,spawnRate:1,bossPower:1,playerDamage:1,xpGain:1,startHp:100,doubleBosses:false},
+  nightmare:{label:'NIGHTMARE',short:'NIGHT',desc:'Much tougher enemies, faster spawns, stronger bosses, better XP.',enemyHp:1.7,enemySpeed:1.2,spawnRate:1.35,bossPower:1.7,playerDamage:.95,xpGain:1.2,startHp:90,doubleBosses:false},
+  impossible:{label:'IMPOSSIBLE',short:'IMP',desc:'Extreme mode: brutal scaling, fast swarms, and double bosses.',enemyHp:2.5,enemySpeed:1.4,spawnRate:1.75,bossPower:2.4,playerDamage:.85,xpGain:1.35,startHp:80,doubleBosses:true}
+};
+let selectedMode=localStorage.neonMode||'standard';
+let customDifficulty=JSON.parse(localStorage.neonCustomDifficulty||'null')||{enemyHp:1,enemySpeed:1,spawnRate:1,bossPower:1,playerDamage:1,xpGain:1,startHp:100,doubleBosses:false};
+let difficulty={...difficultyPresets.standard};
+
 let p={};
+function getDifficulty(){
+  if(selectedMode==='custom') return {label:'CUSTOM',short:'CUSTOM',desc:'Your custom balance settings.',...customDifficulty};
+  return difficultyPresets[selectedMode]||difficultyPresets.standard;
+}
 function basePlayer(){
+  difficulty=getDifficulty();
   return {
-    x:W/2,y:H/2,r:14,hp:100,max:100,speed:250,damage:18,rate:.48,bulletSpeed:600,
+    x:W/2,y:H/2,r:14,hp:difficulty.startHp,max:difficulty.startHp,speed:250,damage:18*difficulty.playerDamage,rate:.48,bulletSpeed:600,
     multi:1,pierce:0,magnet:90,orbit:0,orbitDamage:1,orbitSpeed:2.4,
     area:1,duration:1,regen:0,armor:0,crit:0,critDamage:1.75
   };
@@ -39,11 +56,45 @@ function reset(){
   t=0;kills=0;level=1;xp=0;need=10;enemies=[];bullets=[];gems=[];particles=[];zones=[];mines=[];
   spawn=0;shot=0;bossAt=60;owned={pulse:true};levels={pulse:1};evolved={};evoBanner='';evoBannerTime=0;
   timers={boomerang:0,brick:0,drill:0,durian:0,laser:0,lightning:0,mine:0,molotov:0,slash:0,rpg:0,soccer:0};
-  p=basePlayer();running=true;paused=false;ui.over.classList.add('hide');ui.start.classList.add('hide')
+  p=basePlayer();running=true;paused=false;ui.over.classList.add('hide');ui.start.classList.add('hide');syncModeUI()
 }
 
 document.querySelector('#play').onclick=reset;
 document.querySelector('#again').onclick=reset;
+
+function syncModeUI(){
+  difficulty=getDifficulty();
+  if(ui.modeLabel)ui.modeLabel.textContent=difficulty.label;
+  if(ui.modeDesc)ui.modeDesc.textContent=difficulty.desc;
+  if(ui.hudMode)ui.hudMode.textContent=difficulty.short;
+  document.querySelectorAll('.mode-btn').forEach(b=>b.classList.toggle('active',b.dataset.mode===selectedMode));
+  if(ui.customSettings)ui.customSettings.classList.toggle('hide',selectedMode!=='custom');
+}
+function selectMode(mode){
+  selectedMode=mode;localStorage.neonMode=mode;syncModeUI()
+}
+document.querySelectorAll('.mode-btn').forEach(b=>b.addEventListener('click',()=>selectMode(b.dataset.mode)));
+const customFields=[
+  ['enemyHp','enemyHpVal','x'],['enemySpeed','enemySpeedVal','x'],['spawnRate','spawnRateVal','x'],
+  ['bossPower','bossPowerVal','x'],['playerDamage','playerDamageVal','x'],['xpGain','xpGainVal','x'],['startHp','startHpVal','']
+];
+customFields.forEach(([id,val,suffix])=>{
+  const el=document.querySelector('#'+id),out=document.querySelector('#'+val);
+  if(!el||!out)return;
+  el.value=customDifficulty[id];
+  out.textContent=customDifficulty[id]+suffix;
+  el.addEventListener('input',()=>{
+    customDifficulty[id]=+el.value;out.textContent=el.value+suffix;
+    localStorage.neonCustomDifficulty=JSON.stringify(customDifficulty);
+    if(selectedMode==='custom')syncModeUI()
+  })
+});
+const dbl=document.querySelector('#doubleBosses');
+if(dbl){dbl.checked=!!customDifficulty.doubleBosses;dbl.addEventListener('change',()=>{customDifficulty.doubleBosses=dbl.checked;localStorage.neonCustomDifficulty=JSON.stringify(customDifficulty)})}
+const changeMode=document.querySelector('#changeMode');
+if(changeMode)changeMode.onclick=()=>{ui.over.classList.add('hide');ui.start.classList.remove('hide');running=false;paused=false};
+syncModeUI();
+
 
 const passives=[
   {id:'magnet',kind:'Passive',name:'Hi-Power Magnet',desc:'Pickup range +40%',apply:()=>p.magnet*=1.4},
@@ -132,8 +183,10 @@ function levelUp(){
 function spawnEnemy(boss=false){
   let a=Math.random()*Math.PI*2,d=Math.max(W,H)*.65+80;
   let type=boss?3:(t>40&&Math.random()<.16?2:t>15&&Math.random()<.3?1:0);
-  let hp=[30,65,45,700][type]*(1+t/180);
-  enemies.push({x:p.x+Math.cos(a)*d,y:p.y+Math.sin(a)*d,r:[12,18,10,40][type],hp,max:hp,speed:[85,55,125,45][type]*(1+Math.min(t/400,.6)),type,hit:0})
+  const bossMult=type===3?difficulty.bossPower:1;
+  let hp=[30,65,45,700][type]*(1+t/180)*difficulty.enemyHp*bossMult;
+  const speed=[85,55,125,45][type]*(1+Math.min(t/400,.6))*difficulty.enemySpeed*(type===3?Math.max(.9,difficulty.bossPower*.65):1);
+  enemies.push({x:p.x+Math.cos(a)*d,y:p.y+Math.sin(a)*d,r:[12,18,10,40][type],hp,max:hp,speed,type,hit:0})
 }
 
 function nearestEnemy(){
@@ -227,9 +280,13 @@ function update(dt){
   p.x=Math.max(20,Math.min(W-20,p.x));p.y=Math.max(20,Math.min(H-20,p.y));
 
   spawn-=dt;
-  let interval=Math.max(.12,.72-t*.0025);
-  if(spawn<=0){spawn=interval;spawnEnemy();if(t>90&&Math.random()<.12)spawnEnemy()}
-  if(t>=bossAt){spawnEnemy(true);bossAt+=60}
+  let interval=Math.max(.08,(.72-t*.0025)/difficulty.spawnRate);
+  if(spawn<=0){spawn=interval;spawnEnemy();if(t>90&&Math.random()<Math.min(.35,.12*difficulty.spawnRate))spawnEnemy()}
+  if(t>=bossAt){
+    spawnEnemy(true);
+    if(difficulty.doubleBosses)spawnEnemy(true);
+    bossAt+=60
+  }
 
   shot-=dt;if(shot<=0){shot=p.rate;fire()}
   activateSkills(dt);
@@ -288,7 +345,7 @@ function update(dt){
     if(e.hp<=0){
       kills++;
       const count=e.type===3?18:1;
-      const value=e.type===3?4.5:1.5; // 1.5x EXP versus the previous 3 / 1 values.
+      const value=(e.type===3?4.5:1.5)*difficulty.xpGain; // Base game already uses 1.5x EXP, then difficulty multiplies it.
       for(let z=0;z<count;z++)gems.push({x:e.x+(Math.random()-.5)*30,y:e.y+(Math.random()-.5)*30,v:value});
       burst(e.x,e.y,e.type===3?30:8);enemies.splice(i,1)
     }
