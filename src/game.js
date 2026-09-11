@@ -56,7 +56,7 @@ function reset(){
   t=0;kills=0;level=1;xp=0;need=10;enemies=[];bullets=[];gems=[];particles=[];zones=[];mines=[];
   spawn=0;shot=0;bossAt=60;owned={pulse:true};levels={pulse:1};evolved={};evoBanner='';evoBannerTime=0;
   timers={boomerang:0,brick:0,drill:0,durian:0,laser:0,lightning:0,mine:0,molotov:0,slash:0,rpg:0,soccer:0};
-  p=basePlayer();running=true;paused=false;ui.over.classList.add('hide');ui.start.classList.add('hide');syncModeUI()
+  difficulty={...getDifficulty()};p=basePlayer();difficulty={...getDifficulty()};running=true;paused=false;ui.over.classList.add('hide');ui.start.classList.add('hide');syncModeUI()
 }
 
 document.querySelector('#play').onclick=reset;
@@ -65,13 +65,18 @@ document.querySelector('#again').onclick=reset;
 function syncModeUI(){
   difficulty=getDifficulty();
   if(ui.modeLabel)ui.modeLabel.textContent=difficulty.label;
-  if(ui.modeDesc)ui.modeDesc.textContent=difficulty.desc;
+  if(ui.modeDesc)ui.modeDesc.textContent=selectedMode==='custom'
+    ? 'Custom active • Enemy HP '+difficulty.enemyHp+'x • Speed '+difficulty.enemySpeed+'x • Spawn '+difficulty.spawnRate+'x • Boss '+difficulty.bossPower+'x • Damage '+difficulty.playerDamage+'x • XP '+difficulty.xpGain+'x • HP '+difficulty.startHp
+    : difficulty.desc;
   if(ui.hudMode)ui.hudMode.textContent=difficulty.short;
   document.querySelectorAll('.mode-btn').forEach(b=>b.classList.toggle('active',b.dataset.mode===selectedMode));
   if(ui.customSettings)ui.customSettings.classList.toggle('hide',selectedMode!=='custom');
 }
 function selectMode(mode){
-  selectedMode=mode;localStorage.neonMode=mode;syncModeUI()
+  if(!['easy','standard','nightmare','impossible','custom'].includes(mode))return;
+  selectedMode=mode;
+  localStorage.setItem('neonMode',mode);
+  syncModeUI();
 }
 document.querySelectorAll('.mode-btn').forEach(b=>b.addEventListener('click',()=>selectMode(b.dataset.mode)));
 const customFields=[
@@ -85,12 +90,19 @@ customFields.forEach(([id,val,suffix])=>{
   out.textContent=customDifficulty[id]+suffix;
   el.addEventListener('input',()=>{
     customDifficulty[id]=+el.value;out.textContent=el.value+suffix;
-    localStorage.neonCustomDifficulty=JSON.stringify(customDifficulty);
+    localStorage.setItem('neonCustomDifficulty',JSON.stringify(customDifficulty));
     if(selectedMode==='custom')syncModeUI()
   })
 });
 const dbl=document.querySelector('#doubleBosses');
-if(dbl){dbl.checked=!!customDifficulty.doubleBosses;dbl.addEventListener('change',()=>{customDifficulty.doubleBosses=dbl.checked;localStorage.neonCustomDifficulty=JSON.stringify(customDifficulty)})}
+if(dbl){dbl.checked=!!customDifficulty.doubleBosses;dbl.addEventListener('change',()=>{customDifficulty.doubleBosses=dbl.checked;localStorage.setItem('neonCustomDifficulty',JSON.stringify(customDifficulty));syncModeUI()})}
+const resetCustom=document.querySelector('#resetCustom');
+if(resetCustom)resetCustom.onclick=()=>{
+  customDifficulty={enemyHp:1,enemySpeed:1,spawnRate:1,bossPower:1,playerDamage:1,xpGain:1,startHp:100,doubleBosses:false};
+  localStorage.setItem('neonCustomDifficulty',JSON.stringify(customDifficulty));
+  customFields.forEach(([id,val,suffix])=>{const el=document.querySelector('#'+id),out=document.querySelector('#'+val);if(el){el.value=customDifficulty[id];out.textContent=customDifficulty[id]+suffix}});
+  if(dbl)dbl.checked=false;syncModeUI();
+};
 const changeMode=document.querySelector('#changeMode');
 if(changeMode)changeMode.onclick=()=>{ui.over.classList.add('hide');ui.start.classList.remove('hide');running=false;paused=false};
 syncModeUI();
@@ -218,7 +230,7 @@ function targetedShot(type,speed,damage,pierce=0,spread=0){
 }
 
 function activateSkills(dt){
-  const cd=(base)=>Math.max(.18,base*(owned.cube?.84:1));
+  const cd=(base)=>Math.max(.18,base*(owned.cube ? .84 : 1));
 
   if(owned.boomerang&&(timers.boomerang-=dt)<=0){
     timers.boomerang=cd(2.1);radialShot('boomerang',Math.min(2+(levels.boomerang||1),7),260,hitDamage(.9),2.6,7,1)
@@ -367,7 +379,7 @@ function update(dt){
 
   if(p.hp<=0){
     running=false;best=Math.max(best,kills);localStorage.neonBest=best;ui.best.textContent=best;
-    ui.score.textContent='Kills: '+kills+' • Survived: '+fmt(t);ui.over.classList.remove('hide')
+    ui.score.textContent='Mode: '+difficulty.label+' • Kills: '+kills+' • Survived: '+fmt(t);ui.over.classList.remove('hide')
   }
 
   ui.hp.style.width=Math.max(0,p.hp/p.max*100)+'%';
