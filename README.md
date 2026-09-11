@@ -86,16 +86,33 @@ When a matching Active + Passive pair is owned, the game automatically unlocks a
 
 ## ⚡ EVO Combinations
 
-| Active | + Passive | = EVO |
-|---|---|---|
-| Pulse Blaster | Ammo Thruster | **Hyper Barrage** |
-| Orbit Blade | Exo Bracer | **Aegis Ring** |
-| Arc Coil | Energy Cube | **Supercell Core** |
-| Nova Flask | Reactor Fuel | **Inferno Core** |
-| Rocket Pod | Reactor Fuel | **Abyss Missile** |
-| Orbit Blade | Flux Magnet | **Rebound Halo** |
+The game now includes the full combination set shown in the reference chart:
 
-These names, effects, and visuals are original to **Neon Rift Survivor** while using the familiar genre idea of combining an active weapon with a passive skill to evolve it.
+| Active | Passive | EVO |
+|---|---|---|
+| Boomerang | Hi-Power Magnet | Magnetic Rebounder |
+| Brick | Fitness Guide | 1-ton Iron |
+| Drill Shot | Ammo Thruster | Whistling Arrow |
+| Durian | HE Fuel | Caltrops |
+| Forcefield | Energy Drink | Force Barrier |
+| Guardian | Exo-Bracer | Defender |
+| Laser Launcher | Energy Cube | Death Ray |
+| Lightning Emitter | Energy Cube | Supercell |
+| Modular Mine | Molotov | Inferno Bomb |
+| Modular Mine | Lightning Emitter | Thunderbolt Bomb |
+| Molotov | Oil Bond | Fuel Barrel |
+| Moonshade Slash | Ronin Oyoroi | Moonhalo Slash |
+| RPG | HE Fuel | Sharkmaw Gun |
+| Soccer Ball | Sports Shoes | Quantum Ball |
+
+## 💎 Faster EXP
+
+Enemy EXP drops are now **1.5× higher**:
+
+- Normal enemy: **1.5 EXP** instead of 1
+- Boss EXP gem: **4.5 EXP** instead of 3
+
+This makes level-ups arrive faster and gives the larger skill pool enough choices during a run.
 
 ## 🧱 Project Structure
 
