@@ -18,6 +18,7 @@
       <div class="pill">☠ <span id="kills">0</span></div>
       <div class="pill">⏱ <span id="time">0:00</span></div>
       <div class="pill">BEST <span id="best">0</span></div>
+      <div class="pill">MODE <span id="hudMode">STD</span></div>
     </div>
     <div class="hp"><i id="hp"></i></div>
   </div>
@@ -31,6 +32,31 @@
         <br><br>
         <b>Desktop:</b> WASD / Arrow Keys &nbsp; • &nbsp; <b>Mobile:</b> drag anywhere
       </p>
+      <div class="mode-panel">
+        <div class="mode-header">
+          <span>GAME MODE</span>
+          <strong id="modeLabel">STANDARD</strong>
+        </div>
+        <div class="mode-grid">
+          <button class="mode-btn" data-mode="easy">Easy</button>
+          <button class="mode-btn active" data-mode="standard">Standard</button>
+          <button class="mode-btn" data-mode="nightmare">Nightmare</button>
+          <button class="mode-btn" data-mode="impossible">Impossible</button>
+          <button class="mode-btn" data-mode="custom">Custom</button>
+        </div>
+        <p class="mode-desc" id="modeDesc">Balanced enemy strength, spawn rate, XP, and bosses.</p>
+
+        <div id="customSettings" class="custom-settings hide">
+          <div class="setting-row"><label>Enemy HP <span id="enemyHpVal">1.0x</span></label><input id="enemyHp" type="range" min="0.5" max="4" step="0.1" value="1"></div>
+          <div class="setting-row"><label>Enemy Speed <span id="enemySpeedVal">1.0x</span></label><input id="enemySpeed" type="range" min="0.6" max="2.5" step="0.1" value="1"></div>
+          <div class="setting-row"><label>Spawn Rate <span id="spawnRateVal">1.0x</span></label><input id="spawnRate" type="range" min="0.5" max="3" step="0.1" value="1"></div>
+          <div class="setting-row"><label>Boss Power <span id="bossPowerVal">1.0x</span></label><input id="bossPower" type="range" min="0.5" max="4" step="0.1" value="1"></div>
+          <div class="setting-row"><label>Player Damage <span id="playerDamageVal">1.0x</span></label><input id="playerDamage" type="range" min="0.5" max="2.5" step="0.1" value="1"></div>
+          <div class="setting-row"><label>XP Gain <span id="xpGainVal">1.0x</span></label><input id="xpGain" type="range" min="0.5" max="3" step="0.1" value="1"></div>
+          <div class="setting-row"><label>Starting HP <span id="startHpVal">100</span></label><input id="startHp" type="range" min="50" max="300" step="10" value="100"></div>
+          <label class="toggle-row"><input id="doubleBosses" type="checkbox"> Double bosses</label>
+        </div>
+      </div>
       <button class="btn" id="play">ENTER THE RIFT</button>
     </div>
   </div>
@@ -48,7 +74,10 @@
       <div class="logo">RIFT <span>COLLAPSED</span></div>
       <h2 id="score"></h2>
       <p class="sub">Your run ended. Upgrade your strategy and enter again.</p>
-      <button class="btn" id="again">PLAY AGAIN</button>
+      <div class="gameover-actions">
+        <button class="btn" id="again">PLAY AGAIN</button>
+        <button class="btn secondary" id="changeMode">CHANGE MODE</button>
+      </div>
     </div>
   </div>
 
