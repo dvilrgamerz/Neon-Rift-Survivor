@@ -15,6 +15,10 @@ An original **browser-based neon survival / bullet-heaven game** built from scra
 ![Mobile](https://img.shields.io/badge/Mobile-Touch%20Ready-22C55E)
 ![Cost](https://img.shields.io/badge/Hosting-%240-00C7B7)
 
+**🎮 [PLAY THE LIVE GAME](https://neon-rift-survivor.netlify.app)**
+
+🌐 **Live Demo:** https://neon-rift-survivor.netlify.app
+
 </div>
 
 ---
