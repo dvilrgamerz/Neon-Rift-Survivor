@@ -1,44 +1,57 @@
 <!doctype html>
-<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"><title>Neon Rift Survivor</title>
-<style>*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#050712;color:#fff;font-family:system-ui,Arial}canvas{display:block;width:100%;height:100%;touch-action:none}.hud{position:fixed;inset:0;pointer-events:none}.top{display:flex;gap:12px;justify-content:center;padding:14px}.pill{background:#0b1024cc;border:1px solid #43e8ff55;border-radius:999px;padding:8px 14px;font-weight:700;box-shadow:0 0 18px #00d9ff22}.hp{position:absolute;left:18px;right:18px;bottom:20px;height:13px;border:1px solid #fff4;border-radius:9px;background:#111827}.hp i{display:block;height:100%;border-radius:9px;background:linear-gradient(90deg,#ff315f,#ff8a5b)}.xp{position:absolute;left:0;right:0;top:0;height:5px;background:#151a30}.xp i{display:block;height:100%;background:linear-gradient(90deg,#18e4ff,#a94cff)}.overlay{position:fixed;inset:0;display:grid;place-items:center;background:#02040bd9;padding:20px}.card{width:min(650px,94vw);background:#0b1024;border:1px solid #42e9ff55;border-radius:24px;padding:28px;text-align:center;box-shadow:0 0 60px #00d9ff18}.logo{font-size:clamp(35px,7vw,64px);font-weight:1000;letter-spacing:-3px}.logo span{color:#43e8ff}.sub{color:#a9b5d6;line-height:1.55}.btn{pointer-events:auto;border:0;border-radius:14px;padding:14px 25px;background:linear-gradient(135deg,#21dfff,#8b5cff);color:white;font-weight:900;font-size:17px;cursor:pointer}.choices{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:18px 0}.choice{pointer-events:auto;background:#111a35;border:1px solid #5deaff55;color:#fff;padding:18px 10px;border-radius:15px;cursor:pointer}.choice b{display:block;color:#5deaff;margin-bottom:7px}.hide{display:none}@media(max-width:600px){.choices{grid-template-columns:1fr}.top{justify-content:flex-start;flex-wrap:wrap}.pill{padding:6px 10px;font-size:13px}}</style></head>
-<body><canvas id="game"></canvas><div class="hud"><div class="xp"><i id="xp"></i></div><div class="top"><div class="pill">LV <span id="lv">1</span></div><div class="pill">☠ <span id="kills">0</span></div><div class="pill">⏱ <span id="time">0:00</span></div><div class="pill">BEST <span id="best">0</span></div></div><div class="hp"><i id="hp"></i></div></div>
-<div id="start" class="overlay"><div class="card"><div class="logo">NEON RIFT <span>SURVIVOR</span></div><p class="sub">An original endless neon survival game. Move, auto-fire, collect energy, build powerful upgrades, and survive escalating enemy swarms.<br><br><b>Desktop:</b> WASD / Arrow Keys &nbsp; • &nbsp; <b>Mobile:</b> drag anywhere</p><button class="btn" id="play">ENTER THE RIFT</button></div></div>
-<div id="level" class="overlay hide"><div class="card"><h1>LEVEL UP</h1><p class="sub">Choose one upgrade</p><div class="choices" id="choices"></div></div></div>
-<div id="over" class="overlay hide"><div class="card"><div class="logo">RIFT <span>COLLAPSED</span></div><h2 id="score"></h2><p class="sub">Your run ended. Upgrade your strategy and enter again.</p><button class="btn" id="again">PLAY AGAIN</button></div></div>
-<script>
-const c=document.querySelector('#game'),x=c.getContext('2d');let W,H,dpr;function resize(){dpr=Math.min(devicePixelRatio||1,2);W=innerWidth;H=innerHeight;c.width=W*dpr;c.height=H*dpr;x.setTransform(dpr,0,0,dpr,0,0)}addEventListener('resize',resize);resize();
-const ui={hp:document.querySelector('#hp'),xp:document.querySelector('#xp'),lv:document.querySelector('#lv'),kills:document.querySelector('#kills'),time:document.querySelector('#time'),best:document.querySelector('#best'),start:document.querySelector('#start'),level:document.querySelector('#level'),over:document.querySelector('#over'),choices:document.querySelector('#choices'),score:document.querySelector('#score')};
-let keys={},running=false,paused=false,last=0,t=0,kills=0,level=1,xp=0,need=10,enemies=[],bullets=[],gems=[],particles=[],spawn=0,shot=0,bossAt=60;let best=+localStorage.neonBest||0;ui.best.textContent=best;
-let p={x:W/2,y:H/2,r:14,hp:100,max:100,speed:250,damage:18,rate:.48,bulletSpeed:600,multi:1,pierce:0,magnet:90,orbit:0};
-addEventListener('keydown',e=>{keys[e.key.toLowerCase()]=1;if(e.key==='Escape')paused=!paused});addEventListener('keyup',e=>keys[e.key.toLowerCase()]=0);
-let touch=null;c.addEventListener('pointerdown',e=>touch={sx:e.clientX,sy:e.clientY,x:e.clientX,y:e.clientY});c.addEventListener('pointermove',e=>{if(touch){touch.x=e.clientX;touch.y=e.clientY}});c.addEventListener('pointerup',()=>touch=null);
-function reset(){t=0;kills=0;level=1;xp=0;need=10;enemies=[];bullets=[];gems=[];particles=[];spawn=0;shot=0;bossAt=60;p={x:W/2,y:H/2,r:14,hp:100,max:100,speed:250,damage:18,rate:.48,bulletSpeed:600,multi:1,pierce:0,magnet:90,orbit:0};running=true;paused=false;ui.over.classList.add('hide');ui.start.classList.add('hide')}
-document.querySelector('#play').onclick=reset;document.querySelector('#again').onclick=reset;
-const upgrades=[
-['Overcharge','+35% projectile damage',()=>p.damage*=1.35],['Rapid Core','Fire 18% faster',()=>p.rate*=.82],['Twin Shot','+1 projectile',()=>p.multi=Math.min(5,p.multi+1)],['Phase Pierce','Projectiles pierce +1 enemy',()=>p.pierce++],['Thrusters','Move 15% faster',()=>p.speed*=1.15],['Vital Matrix','+30 max HP and heal',()=>{p.max+=30;p.hp=Math.min(p.max,p.hp+30)}],['Magnet Field','Pickup range +45%',()=>p.magnet*=1.45],['Orbit Blade','Add a rotating energy blade',()=>p.orbit=Math.min(6,p.orbit+1)],['Velocity','Projectile speed +25%',()=>p.bulletSpeed*=1.25],['Repair','Restore 45 HP',()=>p.hp=Math.min(p.max,p.hp+45)]
-];
-function levelUp(){paused=true;ui.level.classList.remove('hide');ui.choices.innerHTML='';[...upgrades].sort(()=>Math.random()-.5).slice(0,3).forEach(u=>{let b=document.createElement('button');b.className='choice';b.innerHTML='<b>'+u[0]+'</b>'+u[1];b.onclick=()=>{u[2]();ui.level.classList.add('hide');paused=false};ui.choices.appendChild(b)})}
-function spawnEnemy(boss=false){let a=Math.random()*Math.PI*2,d=Math.max(W,H)*.65+80,type=boss?3:(t>40&&Math.random()<.16?2:t>15&&Math.random()<.3?1:0),hp=[30,65,45,700][type]*(1+t/180);enemies.push({x:p.x+Math.cos(a)*d,y:p.y+Math.sin(a)*d,r:[12,18,10,40][type],hp,max:hp,speed:[85,55,125,45][type]*(1+Math.min(t/400,.6)),type,hit:0})}
-function fire(){if(!enemies.length)return;let e=enemies.reduce((a,b)=>Math.hypot(a.x-p.x,a.y-p.y)<Math.hypot(b.x-p.x,b.y-p.y)?a:b),a=Math.atan2(e.y-p.y,e.x-p.x);for(let i=0;i<p.multi;i++){let off=(i-(p.multi-1)/2)*.13,aa=a+off;bullets.push({x:p.x,y:p.y,vx:Math.cos(aa)*p.bulletSpeed,vy:Math.sin(aa)*p.bulletSpeed,r:5,life:1.8,pierce:p.pierce})}}
-function burst(px,py,n=7){for(let i=0;i<n;i++){let a=Math.random()*6.28,s=30+Math.random()*130;particles.push({x:px,y:py,vx:Math.cos(a)*s,vy:Math.sin(a)*s,l:.45})}}
-function update(dt){if(!running||paused)return;t+=dt;let dx=(keys.d||keys.arrowright?1:0)-(keys.a||keys.arrowleft?1:0),dy=(keys.s||keys.arrowdown?1:0)-(keys.w||keys.arrowup?1:0);if(touch){dx=(touch.x-touch.sx)/50;dy=(touch.y-touch.sy)/50}let m=Math.hypot(dx,dy)||1;if(Math.hypot(dx,dy)>0){p.x+=dx/m*p.speed*dt;p.y+=dy/m*p.speed*dt}p.x=Math.max(20,Math.min(W-20,p.x));p.y=Math.max(20,Math.min(H-20,p.y));
-spawn-=dt;let interval=Math.max(.12,.72-t*.0025);if(spawn<=0){spawn=interval;spawnEnemy();if(t>90&&Math.random()<.12)spawnEnemy()}if(t>=bossAt){spawnEnemy(true);bossAt+=60}
-shot-=dt;if(shot<=0){shot=p.rate;fire()}bullets.forEach(b=>{b.x+=b.vx*dt;b.y+=b.vy*dt;b.life-=dt});
-enemies.forEach(e=>{let a=Math.atan2(p.y-e.y,p.x-e.x);e.x+=Math.cos(a)*e.speed*dt;e.y+=Math.sin(a)*e.speed*dt;e.hit-=dt;if(Math.hypot(e.x-p.x,e.y-p.y)<e.r+p.r&&e.hit<=0){p.hp-=e.type===3?24:10;e.hit=.55;burst(p.x,p.y,10)}});
-if(p.orbit){for(let j=0;j<p.orbit;j++){let a=t*2.4+j*6.28/p.orbit,ox=p.x+Math.cos(a)*58,oy=p.y+Math.sin(a)*58;enemies.forEach(e=>{if(Math.hypot(e.x-ox,e.y-oy)<e.r+8&&e.hit<=0){e.hp-=p.damage*.65;e.hit=.16;burst(e.x,e.y,3)}})}}
-bullets.forEach(b=>enemies.forEach(e=>{if(b.life>0&&Math.hypot(b.x-e.x,b.y-e.y)<b.r+e.r){e.hp-=p.damage;b.life=b.pierce>0?(b.pierce--,b.life):-1;burst(b.x,b.y,3)}}));
-for(let i=enemies.length-1;i>=0;i--){let e=enemies[i];if(e.hp<=0){kills++;let count=e.type===3?18:1;for(let z=0;z<count;z++)gems.push({x:e.x+(Math.random()-.5)*30,y:e.y+(Math.random()-.5)*30,v:e.type===3?3:1});burst(e.x,e.y,e.type===3?30:8);enemies.splice(i,1)}}
-gems.forEach(g=>{let d=Math.hypot(g.x-p.x,g.y-p.y);if(d<p.magnet){let a=Math.atan2(p.y-g.y,p.x-g.x),s=200+(p.magnet-d)*4;g.x+=Math.cos(a)*s*dt;g.y+=Math.sin(a)*s*dt}if(d<22){xp+=g.v;g.dead=1}});gems=gems.filter(g=>!g.dead);
-if(xp>=need){xp-=need;level++;need=Math.floor(need*1.28+4);levelUp()}particles.forEach(q=>{q.x+=q.vx*dt;q.y+=q.vy*dt;q.l-=dt});particles=particles.filter(q=>q.l>0);bullets=bullets.filter(b=>b.life>0);
-if(p.hp<=0){running=false;best=Math.max(best,kills);localStorage.neonBest=best;ui.best.textContent=best;ui.score.textContent='Kills: '+kills+' • Survived: '+fmt(t);ui.over.classList.remove('hide')}
-ui.hp.style.width=Math.max(0,p.hp/p.max*100)+'%';ui.xp.style.width=xp/need*100+'%';ui.lv.textContent=level;ui.kills.textContent=kills;ui.time.textContent=fmt(t)}
-function fmt(v){return Math.floor(v/60)+':'+String(Math.floor(v%60)).padStart(2,'0')}
-function draw(){x.fillStyle='#050712';x.fillRect(0,0,W,H);x.strokeStyle='#17213d';x.lineWidth=1;let s=48,ox=(-p.x*.12)%s,oy=(-p.y*.12)%s;for(let i=ox;i<W;i+=s){x.beginPath();x.moveTo(i,0);x.lineTo(i,H);x.stroke()}for(let i=oy;i<H;i+=s){x.beginPath();x.moveTo(0,i);x.lineTo(W,i);x.stroke()}
-gems.forEach(g=>{x.fillStyle='#39f6e8';x.shadowBlur=12;x.shadowColor='#39f6e8';x.beginPath();x.arc(g.x,g.y,5,0,7);x.fill()});x.shadowBlur=0;
-bullets.forEach(b=>{x.fillStyle='#fff';x.shadowBlur=15;x.shadowColor='#4beaff';x.beginPath();x.arc(b.x,b.y,b.r,0,7);x.fill()});x.shadowBlur=0;
-enemies.forEach(e=>{let col=['#ff426d','#b657ff','#ffb347','#ff315f'][e.type];x.fillStyle=col;x.shadowBlur=e.type===3?30:12;x.shadowColor=col;x.beginPath();x.arc(e.x,e.y,e.r,0,7);x.fill();x.shadowBlur=0;if(e.type===3){x.fillStyle='#25102a';x.fillRect(e.x-35,e.y-e.r-14,70,5);x.fillStyle='#ff426d';x.fillRect(e.x-35,e.y-e.r-14,70*e.hp/e.max,5)}});
-if(p.orbit)for(let j=0;j<p.orbit;j++){let a=t*2.4+j*6.28/p.orbit;x.save();x.translate(p.x+Math.cos(a)*58,p.y+Math.sin(a)*58);x.rotate(a);x.fillStyle='#d861ff';x.shadowBlur=18;x.shadowColor='#d861ff';x.fillRect(-9,-4,18,8);x.restore()}x.shadowBlur=0;
-x.fillStyle='#46eaff';x.shadowBlur=24;x.shadowColor='#46eaff';x.beginPath();x.arc(p.x,p.y,p.r,0,7);x.fill();x.fillStyle='#07101d';x.beginPath();x.arc(p.x,p.y,6,0,7);x.fill();x.shadowBlur=0;
-particles.forEach(q=>{x.globalAlpha=Math.max(0,q.l/.45);x.fillStyle='#73efff';x.fillRect(q.x,q.y,3,3)});x.globalAlpha=1;if(touch){x.strokeStyle='#fff6';x.lineWidth=3;x.beginPath();x.arc(touch.sx,touch.sy,34,0,7);x.stroke();x.beginPath();x.arc(touch.sx+(touch.x-touch.sx)/Math.max(1,Math.hypot(touch.x-touch.sx,touch.y-touch.sy))*Math.min(25,Math.hypot(touch.x-touch.sx,touch.y-touch.sy)),touch.sy+(touch.y-touch.sy)/Math.max(1,Math.hypot(touch.x-touch.sx,touch.y-touch.sy))*Math.min(25,Math.hypot(touch.x-touch.sx,touch.y-touch.sy)),12,0,7);x.stroke()}}
-function loop(now){let dt=Math.min(.033,(now-last)/1000||0);last=now;update(dt);draw();requestAnimationFrame(loop)}requestAnimationFrame(loop);
-</script></body></html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+  <meta name="theme-color" content="#050712">
+  <meta name="description" content="Neon Rift Survivor — an original neon browser survival game built with HTML5 Canvas, CSS, and JavaScript.">
+  <title>Neon Rift Survivor</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <canvas id="game" aria-label="Neon Rift Survivor game canvas"></canvas>
+
+  <div class="hud">
+    <div class="xp"><i id="xp"></i></div>
+    <div class="top">
+      <div class="pill">LV <span id="lv">1</span></div>
+      <div class="pill">☠ <span id="kills">0</span></div>
+      <div class="pill">⏱ <span id="time">0:00</span></div>
+      <div class="pill">BEST <span id="best">0</span></div>
+    </div>
+    <div class="hp"><i id="hp"></i></div>
+  </div>
+
+  <div id="start" class="overlay">
+    <div class="card">
+      <div class="logo">NEON RIFT <span>SURVIVOR</span></div>
+      <p class="sub">
+        An original endless neon survival game. Move, auto-fire, collect energy,
+        build powerful upgrades, and survive escalating enemy swarms.
+        <br><br>
+        <b>Desktop:</b> WASD / Arrow Keys &nbsp; • &nbsp; <b>Mobile:</b> drag anywhere
+      </p>
+      <button class="btn" id="play">ENTER THE RIFT</button>
+    </div>
+  </div>
+
+  <div id="level" class="overlay hide">
+    <div class="card">
+      <h1>LEVEL UP</h1>
+      <p class="sub">Choose one upgrade</p>
+      <div class="choices" id="choices"></div>
+    </div>
+  </div>
+
+  <div id="over" class="overlay hide">
+    <div class="card">
+      <div class="logo">RIFT <span>COLLAPSED</span></div>
+      <h2 id="score"></h2>
+      <p class="sub">Your run ended. Upgrade your strategy and enter again.</p>
+      <button class="btn" id="again">PLAY AGAIN</button>
+    </div>
+  </div>
+
+  <script src="./src/game.js"></script>
+</body>
+</html>
