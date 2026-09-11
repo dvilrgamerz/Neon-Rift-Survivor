@@ -43,3 +43,14 @@ canvas{display:block;width:100%;height:100%;touch-action:none}
   .setting-row{grid-template-columns:1fr;gap:6px}
   .mode-panel{padding:12px}
 }
+
+.custom-reset{width:100%;margin-top:14px;padding:10px 12px;border-radius:10px;border:1px solid #5deaff44;background:#0d1730;color:#bfefff;font-weight:800;cursor:pointer}
+.custom-reset:hover{border-color:#5deaff;background:#132242}
+.mode-note{margin:-5px 0 14px;color:#7184ad;font-size:12px}
+.mode-btn.active{outline:2px solid #4feaff55;outline-offset:2px}
+@media(max-width:600px){
+ .overlay{align-items:start;overflow-y:auto;padding:12px}
+ .card{margin:auto 0;max-height:none}
+ .custom-settings{padding-bottom:4px}
+ .mode-panel{max-height:none;overflow:visible}
+}
