@@ -52,24 +52,50 @@ The combat is designed around **automatic targeting and firing**, allowing the p
 | Both | Weapons fire automatically |
 | Desktop | **Esc** toggles pause |
 
-## 🧠 Upgrade System
+## 🧠 Active + Passive Skill System
 
-During a run, leveling up presents three randomized choices.
+During a run, leveling up presents three randomized choices. Skills are split into **Active weapons** and **Passive support skills**.
 
-Current upgrades include:
+When a matching Active + Passive pair is owned, the game automatically unlocks a stronger **EVO weapon**. An EVO announcement appears in-game when the combination activates.
 
-| Upgrade | Effect |
+### Current Active skills
+
+| Active Skill | What it does |
 |---|---|
-| Overcharge | +35% projectile damage |
-| Rapid Core | Faster fire rate |
-| Twin Shot | Adds another projectile |
-| Phase Pierce | Adds projectile piercing |
-| Thrusters | Increases movement speed |
-| Vital Matrix | Raises max HP and heals |
-| Magnet Field | Increases pickup radius |
-| Orbit Blade | Adds an orbiting weapon |
-| Velocity | Increases projectile speed |
-| Repair | Restores HP |
+| Pulse Blaster | Starting auto-fire weapon |
+| Orbit Blade | Rotating melee-energy weapon |
+| Arc Coil | Periodic multi-target lightning |
+| Nova Flask | Damage field around the player |
+| Rocket Pod | Explosive seeker missiles |
+
+### Current Passive skills
+
+| Passive Skill | Effect |
+|---|---|
+| Ammo Thruster | Faster fire rate |
+| Flux Magnet | Larger pickup range |
+| Reactor Fuel | Stronger area effects |
+| Energy Cube | Faster skill cooldowns |
+| Exo Bracer | Faster orbit weapons |
+| Overcharge Core | Higher projectile damage |
+| Twin Matrix | Additional projectiles |
+| Phase Pierce | Additional projectile piercing |
+| Vector Boots | Faster movement |
+| Vital Matrix | More max HP + healing |
+| Repair Nanites | Restores HP |
+
+## ⚡ EVO Combinations
+
+| Active | + Passive | = EVO |
+|---|---|---|
+| Pulse Blaster | Ammo Thruster | **Hyper Barrage** |
+| Orbit Blade | Exo Bracer | **Aegis Ring** |
+| Arc Coil | Energy Cube | **Supercell Core** |
+| Nova Flask | Reactor Fuel | **Inferno Core** |
+| Rocket Pod | Reactor Fuel | **Abyss Missile** |
+| Orbit Blade | Flux Magnet | **Rebound Halo** |
+
+These names, effects, and visuals are original to **Neon Rift Survivor** while using the familiar genre idea of combining an active weapon with a passive skill to evolve it.
 
 ## 🧱 Project Structure
 
@@ -238,7 +264,7 @@ This version runs directly in a browser. HTML, CSS, and JavaScript are sufficien
 
 Potential V2 improvements:
 
-- [ ] Weapon evolution combinations
+- [x] Weapon evolution combinations
 - [ ] More enemy classes
 - [ ] Ranged enemies
 - [ ] More bosses with unique attacks
