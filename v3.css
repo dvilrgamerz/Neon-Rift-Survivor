@@ -1,0 +1,7 @@
+.version-chip{display:inline-block;margin-bottom:12px;padding:6px 10px;border:1px solid #5deaff55;border-radius:999px;background:#0b1830;color:#5deaff;font-size:11px;font-weight:900;letter-spacing:.16em}
+.loadout{position:absolute;top:72px;left:14px;display:flex;flex-direction:column;gap:5px;max-width:240px}
+.loadout span{display:block;padding:5px 8px;border:1px solid #43e8ff2f;border-radius:8px;background:#071027bb;color:#bfefff;font-size:11px;font-weight:750;backdrop-filter:blur(8px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pause-badge{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);padding:18px 28px;border:1px solid #5deaff77;border-radius:16px;background:#050b1be8;color:#fff;font-weight:1000;font-size:28px;letter-spacing:.08em;text-align:center;box-shadow:0 0 50px #43e8ff24;backdrop-filter:blur(10px)}
+.pause-badge small{display:block;margin-top:6px;color:#8fa6d6;font-size:12px;font-weight:700;letter-spacing:0}
+.choice small{color:#ffe66d;font-weight:900}
+@media(max-width:700px){.loadout{top:auto;bottom:38px;left:12px;max-width:190px}.loadout span{font-size:10px;padding:4px 6px}.pause-badge{font-size:22px}.top{padding-right:8px}}
