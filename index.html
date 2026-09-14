@@ -4,10 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#050712">
-  <meta name="description" content="Neon Rift Survivor V3 — an original neon browser bullet-heaven survival game built with HTML5 Canvas, CSS, and JavaScript.">
-  <title>Neon Rift Survivor V3</title>
+  <meta name="description" content="Neon Rift Survivor V3.1 — an original neon browser bullet-heaven survival game with strategic upgrade cards, EVO progression, and custom difficulty.">
+  <title>Neon Rift Survivor V3.1</title>
   <link rel="stylesheet" href="./styles.css?v=8">
   <link rel="stylesheet" href="./v3.css?v=3">
+  <link rel="stylesheet" href="./v3.1.css?v=1">
 </head>
 <body>
   <canvas id="game" aria-label="Neon Rift Survivor game canvas"></canvas>
@@ -15,7 +16,7 @@
   <div class="hud">
     <div class="xp"><i id="xp"></i></div>
     <div class="top">
-      <div class="pill">V3</div>
+      <div class="pill">V3.1</div>
       <div class="pill">LV <span id="lv">1</span></div>
       <div class="pill">☠ <span id="kills">0</span></div>
       <div class="pill">⏱ <span id="time">0:00</span></div>
@@ -29,10 +30,10 @@
 
   <div id="start" class="overlay">
     <div class="card">
-      <div class="version-chip">VERSION 3</div>
+      <div class="version-chip">VERSION 3.1</div>
       <div class="logo">NEON RIFT <span>SURVIVOR</span></div>
       <p class="sub">
-        Survive an escalating neon rift, collect energy, build a loadout, and evolve your weapons into stronger forms.
+        Survive an escalating neon rift, collect energy, build a focused loadout, and evolve your weapons into stronger forms.
         <br><br>
         <b>Desktop:</b> WASD / Arrow Keys &nbsp; • &nbsp; <b>Pause:</b> Esc &nbsp; • &nbsp; <b>Mobile:</b> drag anywhere
       </p>
@@ -62,14 +63,14 @@
           <button class="custom-reset" id="resetCustom" type="button">Reset Custom to Standard</button>
         </div>
       </div>
-      <p class="mode-note">Each mode now has its own best score. Custom settings are saved locally.</p>
+      <p class="mode-note">V3.1 adds smarter upgrade cards, EVO progress hints, build synergy weighting, and 2 rerolls per run.</p>
       <button class="btn" id="play">ENTER THE RIFT</button>
     </div>
   </div>
 
   <div id="level" class="overlay hide">
     <div class="card">
-      <div class="version-chip">BUILD YOUR RUN</div>
+      <div class="version-chip">BUILD YOUR RUN • V3.1</div>
       <h1>LEVEL UP</h1>
       <p class="sub">Choose one upgrade. Max an active weapon and own its matching passive to unlock its EVO.</p>
       <div class="choices" id="choices"></div>
@@ -89,5 +90,6 @@
   </div>
 
   <script src="./src/game-v3.js?v=3"></script>
+  <script src="./src/upgrade-v3.1.js?v=1"></script>
 </body>
 </html>
