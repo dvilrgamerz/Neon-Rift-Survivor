@@ -1,4 +1,4 @@
-/* Neon Rift Survivor V3.1 — upgrade-system enhancement layer */
+/* Neon Rift Survivor V3.2 — upgrade rarity + strategy layer */
 (() => {
   const icons = {
     disc:'◈', brick:'⬢', drill:'➤', core:'✹', field:'◉', guard:'✦', laser:'╱', arc:'ϟ',
@@ -6,6 +6,32 @@
     fuel:'⬡', regen:'✚', bracer:'⟳', cube:'◇', catalyst:'✺', armor:'⬟', boots:'➜', power:'✧',
     rate:'»', crit:'✣', repair:'✚'
   };
+
+  const RARITIES = [
+    {key:'common',label:'COMMON',rate:45,bonusText:'Base upgrade',damage:1,hp:0,heal:0},
+    {key:'uncommon',label:'UNCOMMON',rate:28,bonusText:'+0.5% bonus damage',damage:1.005,hp:0,heal:0},
+    {key:'rare',label:'RARE',rate:16,bonusText:'+1% bonus damage • +1 max HP',damage:1.01,hp:1,heal:1},
+    {key:'epic',label:'EPIC',rate:8,bonusText:'+2% bonus damage • +2 max HP',damage:1.02,hp:2,heal:2},
+    {key:'legendary',label:'LEGENDARY',rate:3,bonusText:'+4% bonus damage • +4 max HP',damage:1.04,hp:4,heal:4}
+  ];
+
+  function rollRarity(){
+    let roll = Math.random()*100;
+    for(const rarity of RARITIES){
+      roll -= rarity.rate;
+      if(roll < 0) return rarity;
+    }
+    return RARITIES[0];
+  }
+
+  function applyRarityBonus(rarity){
+    if(!rarity || rarity.key === 'common') return;
+    p.damage *= rarity.damage;
+    if(rarity.hp){
+      p.max += rarity.hp;
+      p.hp = Math.min(p.max,p.hp+rarity.heal);
+    }
+  }
 
   const activePreviews = {
     disc: n => `+1 disc and stronger disc damage at Lv.${n}.`,
@@ -21,15 +47,6 @@
     slash: n => `Larger Crescent Wave radius and stronger shockwave at Lv.${n}.`,
     missile: n => `Adds another Void Missile and increases explosion damage at Lv.${n}.`,
     orb: n => `Adds another Kinetic Orb and increases orb damage/size at Lv.${n}.`
-  };
-
-  const tierFor = (u, next) => {
-    if (u.utility) return {key:'recovery', label:'RECOVERY'};
-    if (u.kind === 'Active' && next >= u.max) return {key:'legendary', label:'LEGENDARY'};
-    if (next >= 4) return {key:'epic', label:'EPIC'};
-    if (next >= 3) return {key:'rare', label:'RARE'};
-    if (next >= 2) return {key:'uncommon', label:'UNCOMMON'};
-    return {key:'common', label:'COMMON'};
   };
 
   const passiveName = id => upgrades.find(u => u.id === id)?.name || id;
@@ -101,6 +118,9 @@
       tools = document.createElement('div');
       tools.className = 'upgrade-tools';
       tools.innerHTML = `
+        <div class="rarity-rates" aria-label="Upgrade rarity rates">
+          ${RARITIES.map(r=>`<span class="rarity-chip rarity-${r.key}">${r.label} <b>${r.rate}%</b></span>`).join('')}
+        </div>
         <div class="upgrade-help"><span>1–3 select</span><span>R reroll</span><span>Max active + paired passive = EVO</span></div>
         <button id="rerollUpgrade" class="reroll-btn" type="button"></button>`;
       card.appendChild(tools);
@@ -112,7 +132,8 @@
     return {
       id:'rift-stabilizer', kind:'Utility', name:'Rift Stabilizer', max:1, utility:true,
       desc:'All normal upgrades are maxed. Gain +8% damage, +10 max HP, and heal 10 HP.',
-      fallback:true
+      fallback:true,
+      rolledRarity:{key:'recovery',label:'RECOVERY',rate:100,bonusText:'Max-build fallback'}
     };
   }
 
@@ -126,30 +147,34 @@
       setState(STATES.PLAYING);
       return;
     }
+    applyRarityBonus(u.rolledRarity);
     chooseUpgrade(u);
   }
 
   function renderUpgradeChoices(isReroll=false){
     ui.choices.innerHTML = '';
     const pool = upgrades.filter(canOffer);
-    shownChoices = pool.length ? weightedChoices(pool,3) : [fallbackChoice()];
+    shownChoices = pool.length
+      ? weightedChoices(pool,3).map(u=>({...u,rolledRarity:rollRarity()}))
+      : [fallbackChoice()];
 
     shownChoices.forEach((u,index)=>{
       const lv = u.fallback ? 0 : levelOf(u.id);
       const next = u.fallback ? 1 : Math.min(u.max,lv+1);
-      const tier = tierFor(u,next);
+      const rarity = u.rolledRarity || RARITIES[0];
       const evo = u.fallback ? null : evoStatus(u,next);
       const b = document.createElement('button');
-      b.className = `choice upgrade-card rarity-${tier.key}${evo?.type==='ready'?' evo-ready':''}`;
+      b.className = `choice upgrade-card rarity-${rarity.key}${evo?.type==='ready'?' evo-ready':''}`;
       b.type = 'button';
       b.dataset.choice = String(index+1);
       const stateTag = u.fallback ? 'MAX-BUILD BONUS' : (lv===0 ? 'NEW' : `LV.${lv} → LV.${next}`);
       const icon = icons[u.id] || '✦';
       b.innerHTML = `
-        <span class="upgrade-topline"><span class="upgrade-icon">${icon}</span><span class="upgrade-tier">${tier.label}</span><span class="upgrade-key">${index+1}</span></span>
+        <span class="upgrade-topline"><span class="upgrade-icon">${icon}</span><span class="upgrade-tier">${rarity.label}</span><span class="upgrade-rate">${rarity.rate}%</span><span class="upgrade-key">${index+1}</span></span>
         <span class="upgrade-kind">${u.kind} • ${stateTag}</span>
         <b class="upgrade-name">${u.name}</b>
         <span class="upgrade-effect">${nextPreview(u,next)}</span>
+        <span class="upgrade-bonus">Rarity bonus: ${rarity.bonusText}</span>
         ${evo ? `<span class="upgrade-evo evo-${evo.type}">${evo.text}</span>` : ''}`;
       b.onclick = ()=>applyChoice(u);
       ui.choices.appendChild(b);
@@ -169,8 +194,8 @@
 
     const sub = ui.level?.querySelector('.sub');
     if (sub) sub.textContent = isReroll
-      ? 'New choices generated. Build toward a Level 5 active + its paired passive to unlock an EVO.'
-      : 'Choose a card. Higher levels improve real weapon stats, and matching passives unlock EVO paths.';
+      ? 'New choices and rarity rolls generated. Legendary is only 3%, so use rerolls carefully.'
+      : 'Choose a card. Rarity is rolled separately from level: Common 45% • Uncommon 28% • Rare 16% • Epic 8% • Legendary 3%.';
   }
 
   levelUp = function(){
