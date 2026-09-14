@@ -1,0 +1,30 @@
+/* Neon Rift Survivor V3.1 — upgrade screen polish */
+#level .card{width:min(920px,96vw)}
+#level .choices{grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;align-items:stretch}
+.upgrade-card{position:relative;min-height:238px;text-align:left;padding:16px;display:flex;flex-direction:column;gap:9px;overflow:hidden;border-width:1px;background:linear-gradient(180deg,#111a35,#0b1125)}
+.upgrade-card::after{content:"";position:absolute;inset:auto -20% -45% 20%;height:130px;border-radius:50%;filter:blur(28px);opacity:.12;background:currentColor;pointer-events:none}
+.upgrade-card:focus-visible{outline:3px solid #fff;outline-offset:3px}
+.upgrade-topline{display:flex;align-items:center;gap:8px}
+.upgrade-icon{display:grid;place-items:center;width:34px;height:34px;border-radius:10px;background:#ffffff12;font-size:20px}
+.upgrade-tier{font-size:11px;font-weight:1000;letter-spacing:.12em}
+.upgrade-key{margin-left:auto;display:grid;place-items:center;width:25px;height:25px;border:1px solid #ffffff26;border-radius:7px;color:#9fb0d3;font-size:12px;font-weight:900}
+.upgrade-kind{font-size:11px;letter-spacing:.09em;color:#91a4cc;font-weight:900}
+.upgrade-name{display:block;font-size:19px!important;margin:0!important;color:#fff!important;line-height:1.12}
+.upgrade-effect{color:#c9d5ef;font-size:13px;line-height:1.45}
+.upgrade-evo{margin-top:auto;padding:8px 9px;border-radius:9px;background:#ffffff0b;border:1px solid #ffffff15;font-size:11px;font-weight:800;color:#9eb2d8}
+.evo-ready{box-shadow:0 0 0 1px #ffe66d66,0 0 32px #ffd84a22}
+.evo-ready .upgrade-evo{color:#ffe66d;border-color:#ffe66d55;background:#ffe66d0d}
+.evo-evolved{color:#69f4d0}
+.rarity-common{border-color:#6e7d9c66}.rarity-common .upgrade-tier{color:#aebbd3}
+.rarity-uncommon{border-color:#46e6a066}.rarity-uncommon .upgrade-tier{color:#65f0b5}
+.rarity-rare{border-color:#55a7ff77}.rarity-rare .upgrade-tier{color:#72b9ff}
+.rarity-epic{border-color:#b36cff88}.rarity-epic .upgrade-tier{color:#c98cff}
+.rarity-legendary{border-color:#ffd85a99;background:linear-gradient(180deg,#251d34,#101225)}.rarity-legendary .upgrade-tier{color:#ffe272}
+.rarity-recovery{border-color:#5df2cf77}.rarity-recovery .upgrade-tier{color:#78f5d8}
+.upgrade-tools{margin-top:14px;display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.upgrade-help{display:flex;gap:8px;flex-wrap:wrap;color:#7f91b7;font-size:11px}
+.upgrade-help span{padding:6px 8px;border-radius:999px;background:#ffffff08;border:1px solid #ffffff10}
+.reroll-btn{pointer-events:auto;border:1px solid #57eaff55;border-radius:11px;background:#101a34;color:#dffcff;padding:10px 14px;font-weight:900;cursor:pointer}
+.reroll-btn:hover:not(:disabled){border-color:#57eaff;background:#162643;transform:translateY(-1px)}
+.reroll-btn:disabled{opacity:.4;cursor:not-allowed}
+@media(max-width:760px){#level .choices{grid-template-columns:1fr}.upgrade-card{min-height:0}.upgrade-tools{align-items:stretch}.reroll-btn{width:100%}.upgrade-help{justify-content:center;width:100%}}
