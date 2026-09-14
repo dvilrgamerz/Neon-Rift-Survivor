@@ -1,0 +1,14 @@
+{
+  "name": "Neon Rift Survivor V4 — Rift Expedition",
+  "short_name": "Neon Rift V4",
+  "description": "Offline-ready neon bullet-heaven survival with Operators, arenas, bosses, progression, leaderboards, VFX and SFX.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#050712",
+  "theme_color": "#050712",
+  "orientation": "any",
+  "icons": [
+    {"src":"./assets/v4-icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}
+  ]
+}
