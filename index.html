@@ -4,12 +4,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#050712">
-  <meta name="description" content="Neon Rift Survivor V3.3 — an original neon browser bullet-heaven game with Rift Classes, smarter enemies, multi-phase bosses, rarity upgrades, EVOs, and build synergies.">
-  <title>Neon Rift Survivor V3.3</title>
+  <meta name="description" content="Neon Rift Survivor V4 — Rift Expedition: Operators, arenas, progression, multi-phase bosses, Mythic upgrades, leaderboards, VFX/SFX and offline play.">
+  <title>Neon Rift Survivor V4 — Rift Expedition</title>
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" href="./assets/v4-icon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="./styles.css?v=8">
   <link rel="stylesheet" href="./v3.css?v=3">
   <link rel="stylesheet" href="./v3.1.css?v=2">
   <link rel="stylesheet" href="./v3.3.css?v=1">
+  <link rel="stylesheet" href="./v4.css?v=1">
 </head>
 <body>
   <canvas id="game" aria-label="Neon Rift Survivor game canvas"></canvas>
@@ -17,7 +20,7 @@
   <div class="hud">
     <div class="xp"><i id="xp"></i></div>
     <div class="top">
-      <div class="pill">V3.3</div>
+      <div class="pill">V4</div>
       <div class="pill">LV <span id="lv">1</span></div>
       <div class="pill">☠ <span id="kills">0</span></div>
       <div class="pill">⏱ <span id="time">0:00</span></div>
@@ -31,16 +34,16 @@
 
   <div id="start" class="overlay">
     <div class="card">
-      <div class="version-chip">VERSION 3.3</div>
+      <div class="version-chip">VERSION 4.0 — RIFT EXPEDITION</div>
       <div class="logo">NEON RIFT <span>SURVIVOR</span></div>
       <p class="sub">
-        Choose a Rift Class, survive smarter enemy archetypes, build synergies, and defeat the multi-phase Rift Warden.
+        Choose an Operator + Rift Class, enter one of five arenas, build EVOs and Ultimate Synergies, defeat arena bosses, earn Rift Cores, and climb local leaderboards.
         <br><br>
-        <b>Desktop:</b> WASD / Arrow Keys &nbsp; • &nbsp; <b>Pause:</b> Esc &nbsp; • &nbsp; <b>Mobile:</b> drag anywhere
+        <b>Desktop:</b> WASD / Arrow Keys &nbsp; • &nbsp; <b>Pause:</b> Esc &nbsp; • &nbsp; <b>Mobile:</b> drag anywhere &nbsp; • &nbsp; <b>Controller:</b> left stick
       </p>
       <div class="mode-panel">
         <div class="mode-header">
-          <span>GAME MODE</span>
+          <span>DIFFICULTY</span>
           <strong id="modeLabel">SELECTED: STANDARD</strong>
         </div>
         <div class="mode-grid">
@@ -64,28 +67,28 @@
           <button class="custom-reset" id="resetCustom" type="button">Reset Custom to Standard</button>
         </div>
       </div>
-      <p class="mode-note">V3.3: 3 Rift Classes • smarter enemy archetypes • three-phase bosses • build synergies • detailed run scoring.</p>
+      <p class="mode-note">V4 • Operators • 5 arenas • Expedition / Daily / Ascension • Rift Cores • Mythic upgrades • VFX/SFX • Top-10 leaderboards • offline PWA.</p>
       <button class="btn" id="play">ENTER THE RIFT</button>
     </div>
   </div>
 
   <div id="level" class="overlay hide">
     <div class="card">
-      <div class="version-chip">BUILD YOUR RUN • V3.3</div>
+      <div class="version-chip">BUILD YOUR RUN • V4</div>
       <h1>LEVEL UP</h1>
-      <p class="sub">Choose one upgrade. Every card rolls a real rarity independently from its level.</p>
+      <p class="sub">Choose one upgrade. V4 can promote cards to Mythic, while V3.2 rarity, rerolls, EVOs and synergies remain active.</p>
       <div class="choices" id="choices"></div>
     </div>
   </div>
 
   <div id="over" class="overlay hide">
     <div class="card">
-      <div class="logo">RIFT <span>COLLAPSED</span></div>
+      <div class="logo">RIFT <span>REPORT</span></div>
       <h2 id="score"></h2>
-      <p class="sub">Your run ended. Review your build, score, and boss progress before entering again.</p>
+      <p class="sub">Review your Operator, arena, mission result, bosses, EVOs, Rift Cores and leaderboard score.</p>
       <div class="gameover-actions">
         <button class="btn" id="again">PLAY AGAIN</button>
-        <button class="btn secondary" id="changeMode">CHANGE MODE</button>
+        <button class="btn secondary" id="changeMode">CHANGE SETUP</button>
       </div>
     </div>
   </div>
@@ -93,5 +96,10 @@
   <script src="./src/game-v3.js?v=3"></script>
   <script src="./src/upgrade-v3.1.js?v=2"></script>
   <script src="./src/v3.3.js?v=1"></script>
+  <script src="./src/v4/config.js?v=1"></script>
+  <script src="./src/v4/audio-vfx.js?v=1"></script>
+  <script src="./src/v4/rarity-patch.js?v=1"></script>
+  <script src="./src/v4/gameplay.js?v=1"></script>
+  <script src="./src/v4/meta.js?v=1"></script>
 </body>
 </html>
