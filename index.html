@@ -4,11 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#050712">
-  <meta name="description" content="Neon Rift Survivor V3.1 — an original neon browser bullet-heaven survival game with strategic upgrade cards, EVO progression, and custom difficulty.">
-  <title>Neon Rift Survivor V3.1</title>
+  <meta name="description" content="Neon Rift Survivor V3.2 — an original neon browser bullet-heaven survival game with real upgrade rarity rates, EVO progression, and custom difficulty.">
+  <title>Neon Rift Survivor V3.2</title>
   <link rel="stylesheet" href="./styles.css?v=8">
   <link rel="stylesheet" href="./v3.css?v=3">
-  <link rel="stylesheet" href="./v3.1.css?v=1">
+  <link rel="stylesheet" href="./v3.1.css?v=2">
 </head>
 <body>
   <canvas id="game" aria-label="Neon Rift Survivor game canvas"></canvas>
@@ -16,7 +16,7 @@
   <div class="hud">
     <div class="xp"><i id="xp"></i></div>
     <div class="top">
-      <div class="pill">V3.1</div>
+      <div class="pill">V3.2</div>
       <div class="pill">LV <span id="lv">1</span></div>
       <div class="pill">☠ <span id="kills">0</span></div>
       <div class="pill">⏱ <span id="time">0:00</span></div>
@@ -30,7 +30,7 @@
 
   <div id="start" class="overlay">
     <div class="card">
-      <div class="version-chip">VERSION 3.1</div>
+      <div class="version-chip">VERSION 3.2</div>
       <div class="logo">NEON RIFT <span>SURVIVOR</span></div>
       <p class="sub">
         Survive an escalating neon rift, collect energy, build a focused loadout, and evolve your weapons into stronger forms.
@@ -63,16 +63,16 @@
           <button class="custom-reset" id="resetCustom" type="button">Reset Custom to Standard</button>
         </div>
       </div>
-      <p class="mode-note">V3.1 adds smarter upgrade cards, EVO progress hints, build synergy weighting, and 2 rerolls per run.</p>
+      <p class="mode-note">V3.2 adds real upgrade rarity rates: Common 45% • Uncommon 28% • Rare 16% • Epic 8% • Legendary 3%.</p>
       <button class="btn" id="play">ENTER THE RIFT</button>
     </div>
   </div>
 
   <div id="level" class="overlay hide">
     <div class="card">
-      <div class="version-chip">BUILD YOUR RUN • V3.1</div>
+      <div class="version-chip">BUILD YOUR RUN • V3.2</div>
       <h1>LEVEL UP</h1>
-      <p class="sub">Choose one upgrade. Max an active weapon and own its matching passive to unlock its EVO.</p>
+      <p class="sub">Choose one upgrade. Every card rolls a real rarity independently from its level.</p>
       <div class="choices" id="choices"></div>
     </div>
   </div>
@@ -90,6 +90,6 @@
   </div>
 
   <script src="./src/game-v3.js?v=3"></script>
-  <script src="./src/upgrade-v3.1.js?v=1"></script>
+  <script src="./src/upgrade-v3.1.js?v=2"></script>
 </body>
 </html>
