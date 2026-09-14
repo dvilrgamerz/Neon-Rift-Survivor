@@ -6,7 +6,7 @@
 
   V4.operators = {
     nova: {name:'NOVA', icon:'✦', role:'Precision / Crit', desc:'+10% damage, +4% crit chance.', apply(p){p.damage*=1.10;p.crit=Math.min(.55,p.crit+.04);}},
-    titan:{name:'TITAN',icon:'⬢',role:'Defense / Shield',desc:'+25 max HP, +8% armor, +15 shield.',apply(p){p.max+=25;p.hp+=25;p.armor=Math.min(.65,p.armor+.08);p.v4Shield=(p.v4Shield||0)+15;}},
+    titan:{name:'TITAN',icon:'⬢',role:'Defense / Shield',desc:'+25 max HP, +8% armor, +15 shield.',apply(p){p.max+=25;p.hp+=25;p.armor=Math.min(.65,p.armor+.08);p.v4Shield=(p.v4Shield||0)+15;p.v4ShieldMax=(p.v4ShieldMax||0)+15;}},
     volt:{name:'VOLT',icon:'ϟ',role:'Chain / Cooldown',desc:'Starts with Arc Conductor Lv.1 and 4% faster skills.',apply(p){owned.arc=true;levels.arc=Math.max(1,levels.arc||0);p.cooldownMult*=.96;}},
     ghost:{name:'GHOST',icon:'◈',role:'Speed / Dodge',desc:'+15% movement speed and +8% dodge.',apply(p){p.speed*=1.15;p.v4Dodge=(p.v4Dodge||0)+.08;}},
     forge:{name:'FORGE',icon:'◆',role:'Explosive / Area',desc:'Starts with Rift Mine Lv.1 and +10% area.',apply(p){owned.mine=true;levels.mine=Math.max(1,levels.mine||0);p.area*=1.10;}}
