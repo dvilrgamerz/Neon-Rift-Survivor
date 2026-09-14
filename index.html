@@ -2,11 +2,12 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#050712">
-  <meta name="description" content="Neon Rift Survivor — an original neon browser survival game built with HTML5 Canvas, CSS, and JavaScript.">
-  <title>Neon Rift Survivor</title>
-  <link rel="stylesheet" href="./styles.css?v=7">
+  <meta name="description" content="Neon Rift Survivor V3 — an original neon browser bullet-heaven survival game built with HTML5 Canvas, CSS, and JavaScript.">
+  <title>Neon Rift Survivor V3</title>
+  <link rel="stylesheet" href="./styles.css?v=8">
+  <link rel="stylesheet" href="./v3.css?v=3">
 </head>
 <body>
   <canvas id="game" aria-label="Neon Rift Survivor game canvas"></canvas>
@@ -14,35 +15,38 @@
   <div class="hud">
     <div class="xp"><i id="xp"></i></div>
     <div class="top">
+      <div class="pill">V3</div>
       <div class="pill">LV <span id="lv">1</span></div>
       <div class="pill">☠ <span id="kills">0</span></div>
       <div class="pill">⏱ <span id="time">0:00</span></div>
       <div class="pill">BEST <span id="best">0</span></div>
       <div class="pill">MODE <span id="hudMode">STD</span></div>
     </div>
+    <div id="loadout" class="loadout" aria-label="Current loadout"></div>
+    <div id="pauseBadge" class="pause-badge hide">PAUSED <small>Press Esc to resume</small></div>
     <div class="hp"><i id="hp"></i></div>
   </div>
 
   <div id="start" class="overlay">
     <div class="card">
+      <div class="version-chip">VERSION 3</div>
       <div class="logo">NEON RIFT <span>SURVIVOR</span></div>
       <p class="sub">
-        An original endless neon survival game. Move, auto-fire, collect energy,
-        build powerful upgrades, and survive escalating enemy swarms.
+        Survive an escalating neon rift, collect energy, build a loadout, and evolve your weapons into stronger forms.
         <br><br>
-        <b>Desktop:</b> WASD / Arrow Keys &nbsp; • &nbsp; <b>Mobile:</b> drag anywhere
+        <b>Desktop:</b> WASD / Arrow Keys &nbsp; • &nbsp; <b>Pause:</b> Esc &nbsp; • &nbsp; <b>Mobile:</b> drag anywhere
       </p>
       <div class="mode-panel">
         <div class="mode-header">
           <span>GAME MODE</span>
-          <strong id="modeLabel">STANDARD</strong>
+          <strong id="modeLabel">SELECTED: STANDARD</strong>
         </div>
         <div class="mode-grid">
-          <button class="mode-btn" data-mode="easy">Easy</button>
-          <button class="mode-btn active" data-mode="standard">Standard</button>
-          <button class="mode-btn" data-mode="nightmare">Nightmare</button>
-          <button class="mode-btn" data-mode="impossible">Impossible</button>
-          <button class="mode-btn" data-mode="custom">Custom</button>
+          <button class="mode-btn" data-mode="easy" type="button">Easy</button>
+          <button class="mode-btn active" data-mode="standard" type="button">Standard</button>
+          <button class="mode-btn" data-mode="nightmare" type="button">Nightmare</button>
+          <button class="mode-btn" data-mode="impossible" type="button">Impossible</button>
+          <button class="mode-btn" data-mode="custom" type="button">Custom</button>
         </div>
         <p class="mode-desc" id="modeDesc">Balanced enemy strength, spawn rate, XP, and bosses.</p>
 
@@ -58,15 +62,16 @@
           <button class="custom-reset" id="resetCustom" type="button">Reset Custom to Standard</button>
         </div>
       </div>
-      <p class="mode-note">Your selected mode is applied when you press Enter the Rift.</p>
+      <p class="mode-note">Each mode now has its own best score. Custom settings are saved locally.</p>
       <button class="btn" id="play">ENTER THE RIFT</button>
     </div>
   </div>
 
   <div id="level" class="overlay hide">
     <div class="card">
+      <div class="version-chip">BUILD YOUR RUN</div>
       <h1>LEVEL UP</h1>
-      <p class="sub">Choose one upgrade</p>
+      <p class="sub">Choose one upgrade. Max an active weapon and own its matching passive to unlock its EVO.</p>
       <div class="choices" id="choices"></div>
     </div>
   </div>
@@ -83,6 +88,6 @@
     </div>
   </div>
 
-  <script src="./src/game.js?v=7"></script>
+  <script src="./src/game-v3.js?v=3"></script>
 </body>
 </html>

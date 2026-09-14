@@ -1,244 +1,709 @@
 <div align="center">
 
-# 🌌 Neon Rift Survivor
+# 🌌 Neon Rift Survivor V3
 
-### Survive the rift. Build your loadout. Outlast the swarm.
+### Survive the rift. Build a loadout. Evolve your arsenal.
 
-An original **browser-based neon survival / bullet-heaven game** built from scratch with HTML5 Canvas, CSS, and vanilla JavaScript.
+An original browser-based **bullet-heaven / endless survival game** built from scratch with **HTML5 Canvas, CSS, and vanilla JavaScript**.
 
 [![HTML5](https://img.shields.io/badge/HTML5-Canvas-E34F26?logo=html5&logoColor=white)](https://developer.mozilla.org/docs/Web/HTML)
 [![CSS3](https://img.shields.io/badge/CSS3-Responsive-1572B6?logo=css3&logoColor=white)](https://developer.mozilla.org/docs/Web/CSS)
-[![JavaScript](https://img.shields.io/badge/JavaScript-Game%20Engine-F7DF1E?logo=javascript&logoColor=111)](https://developer.mozilla.org/docs/Web/JavaScript)
+[![JavaScript](https://img.shields.io/badge/JavaScript-Vanilla-F7DF1E?logo=javascript&logoColor=111)](https://developer.mozilla.org/docs/Web/JavaScript)
 [![Netlify](https://img.shields.io/badge/Deploy-Netlify-00C7B7?logo=netlify&logoColor=white)](https://www.netlify.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-![Difficulty](https://img.shields.io/badge/Game%20Modes-5-8B5CF6)
+![Version](https://img.shields.io/badge/Version-V3-8B5CF6)
 ![Mobile](https://img.shields.io/badge/Mobile-Touch%20Ready-22C55E)
-![Cost](https://img.shields.io/badge/Hosting-%240-00C7B7)
+![Backend](https://img.shields.io/badge/Backend-None-64748B)
 
 **🎮 [PLAY THE LIVE GAME](https://neon-rift-survivor.netlify.app)**
-
-🌐 **Live Demo:** https://neon-rift-survivor.netlify.app
 
 </div>
 
 ---
 
-## 🎮 About the Game
+## 📖 About the project
 
-**Neon Rift Survivor** is a fast-paced endless survival game where the player fights increasingly dangerous enemy waves while building a stronger run through randomized upgrades.
+**Neon Rift Survivor** is a project I built to learn how a real-time browser game works without relying on a large game engine or JavaScript framework.
 
-The combat is designed around **automatic targeting and firing**, allowing the player to focus on movement, positioning, collecting energy, and choosing upgrades.
+The game runs almost entirely inside one HTML5 Canvas. The browser handles the rendering loop, input, collision detection, enemies, projectiles, XP drops, upgrades, difficulty settings, local saves, menus, and visual effects.
 
-> **Originality note:** this project is inspired by the general survivor / bullet-heaven genre. It does not use Survivor.io source code, artwork, characters, maps, branding, or proprietary assets.
+The goal was not only to make a playable survival game, but also to understand the systems behind one:
 
-## 🔥 Current Build
+- how a game loop updates movement every frame
+- how enemies track the player
+- how automatic weapons choose targets
+- how collisions and damage are calculated
+- how XP and level-up systems work
+- how upgrade pools and EVO combinations can be designed
+- how different difficulty modes can change real gameplay values
+- how to support both keyboard and touchscreen controls
+- how to keep a long-running Canvas game from creating unlimited objects
+- how to save player settings with `localStorage`
+- how to deploy a complete browser game with no backend
 
-> **Difficulty Update:** Easy, Standard, Nightmare, Impossible, and fully configurable Custom mode are now playable.
+V3 is the biggest rebuild of the project so far. It focuses on fixing gameplay bugs, improving progression, making the weapons more original, making long runs more stable, and making the code easier to reason about.
 
-> **Combat Update:** Expanded Active + Passive skill system, EVO combinations, bosses, and **1.5× base EXP drops**.
+---
 
-## ✨ Features
+# 🚀 What's new in V3
 
-- ⚡ Automatic enemy targeting and shooting
-- 👾 Multiple enemy classes with different speed, size, and HP
-- 👑 Boss enemy every 60 seconds
-- 💎 XP / energy drops
-- ⬆️ Random three-choice level-up system
-- 🔫 Multi-shot, piercing, damage, and fire-rate upgrades
-- 🌀 Orbiting energy weapon upgrade
-- 🧲 Pickup magnet upgrades
-- ❤️ HP, healing, and survivability upgrades
-- 🎚️ Five selectable difficulty modes
-- 🛠️ Custom difficulty sliders for enemy HP, speed, spawn rate, boss power, player damage, XP, and starting HP
-- 💀 Optional double-boss modifier
-- 📈 Difficulty scaling during every run
-- ✨ Neon particles and glow effects
-- 📱 Mobile touch joystick
-- ⌨️ Keyboard controls
-- 💾 Best score saved with localStorage
-- 🌐 No backend required
-- 💸 $0 hosting-ready on Netlify
+V3 is more than a visual update. A large part of the game engine was rebuilt to make the systems behave consistently.
 
-## 🎚️ Game Modes & Difficulty
+### Gameplay fixes
 
-Neon Rift Survivor now includes five difficulty modes:
+- Fixed piercing projectiles repeatedly damaging the same enemy every frame while overlapping it.
+- Split enemy contact-damage cooldowns from Orbit Guard hit cooldowns.
+- Added explicit game states for menu, gameplay, pause, level-up, and game over.
+- Pressing `Esc` can no longer accidentally resume gameplay behind the level-up screen.
+- Custom difficulty values are validated and clamped before the game uses them.
+- Removed duplicate difficulty-button event handling.
 
-| Mode | Gameplay |
+### Progression improvements
+
+- Every active weapon now has meaningful Level 1–5 scaling.
+- Maxed upgrades are removed from the normal upgrade pool.
+- Active weapons must reach Level 5 before they can evolve.
+- EVOs now change real weapon behavior instead of only applying hidden level boosts.
+- Energy Cube now stacks through a persistent cooldown multiplier.
+- Added a live loadout HUD so the player can see current weapons, levels, and EVOs.
+- Added separate best scores for Easy, Standard, Nightmare, Impossible, and Custom.
+
+### Original Neon Rift arsenal
+
+The weapon set was renamed and redesigned around the game's own sci-fi identity:
+
+- Rift Disc
+- Gravity Brick
+- Ion Drill
+- Spiked Core
+- Phase Field
+- Orbit Guard
+- Prism Lance
+- Arc Conductor
+- Rift Mine
+- Plasma Pool
+- Crescent Wave
+- Void Missile
+- Kinetic Orb
+
+### Performance improvements
+
+Long survival runs can create hundreds of objects, so V3 adds practical limits:
+
+```js
+const MAX_ENEMIES = 260;
+const MAX_GEMS = 420;
+const MAX_PARTICLES = 650;
+const MAX_BULLETS = 420;
+```
+
+When the XP-gem limit is reached, additional XP can be merged instead of allowing the game to create unlimited gem objects.
+
+This keeps the project simple while making it much safer for lower-power laptops and phones.
+
+---
+
+# 🎮 How the game works
+
+The core loop is simple:
+
+1. Move around the arena.
+2. Weapons automatically attack nearby enemies.
+3. Enemies become stronger and spawn faster as the run continues.
+4. Defeated enemies drop energy.
+5. Collect energy to gain XP.
+6. Level up and choose one of three randomized upgrades.
+7. Build Active + Passive combinations.
+8. Reach Level 5 on an active weapon and obtain its matching passive to unlock an EVO.
+9. Survive bosses and increasingly dense enemy waves for as long as possible.
+
+The game is endless, so difficulty continues scaling until the player is defeated.
+
+---
+
+# 🕹️ Controls
+
+| Platform | Control |
 |---|---|
-| Easy | Lower enemy HP/speed, slower spawning, more player HP, more XP |
+| Desktop | `WASD` or Arrow Keys to move |
+| Desktop | `Esc` to pause/resume during active gameplay |
+| Mobile / Tablet | Touch and drag on the game canvas |
+| All platforms | Weapons fire automatically |
+
+The game uses Pointer Events for touch input, which lets the same control system work across phones, tablets, and other pointer-capable devices.
+
+---
+
+# 🎚️ Difficulty modes
+
+Difficulty in Neon Rift Survivor is not only a label. Each mode changes actual values used by the game engine.
+
+| Mode | Main behavior |
+|---|---|
+| Easy | Lower enemy HP and speed, slower spawning, higher player HP, more XP |
 | Standard | Balanced default experience |
-| Nightmare | Tougher/faster enemies, denser waves, stronger bosses |
-| Impossible | Extreme scaling, very fast waves, reduced player damage, double bosses |
-| Custom | Configure enemy HP, enemy speed, spawn rate, boss power, player damage, XP gain, starting HP, and double bosses |
+| Nightmare | Tougher enemies, denser waves, stronger bosses |
+| Impossible | Extreme scaling, faster swarms, lower player damage, double bosses |
+| Custom | Player-controlled difficulty multipliers |
 
-Custom difficulty settings are saved in the browser with `localStorage`, so your selected mode and custom values stay after refresh.
+Custom mode lets the player adjust:
 
-## 🕹️ Controls
+- Enemy HP
+- Enemy speed
+- Spawn rate
+- Boss power
+- Player damage
+- XP gain
+- Starting HP
+- Double bosses
 
-| Platform | Controls |
+V3 validates these values before using them so broken or outdated `localStorage` data cannot easily create invalid gameplay values such as `NaN`.
+
+Best scores are stored separately for each mode using keys based on the selected difficulty.
+
+---
+
+# ⚡ Active weapons
+
+Every active weapon can reach **Level 5**. Levels change things such as projectile count, radius, damage, duration, piercing, cooldown, or area.
+
+| Weapon | Main role |
 |---|---|
-| Desktop | **WASD** or **Arrow Keys** to move |
-| Mobile / Tablet | Touch and drag anywhere on the game |
-| Both | Weapons fire automatically |
-| Desktop | **Esc** toggles pause |
+| Rift Disc | Radial piercing energy discs |
+| Gravity Brick | Heavy targeted kinetic projectiles |
+| Ion Drill | Fast line-piercing attacks |
+| Spiked Core | Long-lived rolling energy core |
+| Phase Field | Continuous close-range damage |
+| Orbit Guard | Rotating defensive blades |
+| Prism Lance | High-speed piercing beams |
+| Arc Conductor | Multi-target electrical strikes |
+| Rift Mine | Proximity explosions |
+| Plasma Pool | Persistent ground damage |
+| Crescent Wave | Periodic close-range shockwave |
+| Void Missile | Homing explosive missiles |
+| Kinetic Orb | Fast radial kinetic projectiles |
 
-## 🧠 Active + Passive Skill System
+---
 
-During a run, leveling up presents three randomized choices. Skills are split into **Active weapons** and **Passive support skills**.
+# 🧠 Passive upgrades
 
-When a matching Active + Passive pair is owned, the game automatically unlocks a stronger **EVO weapon**. An EVO announcement appears in-game when the combination activates.
+Passive upgrades strengthen the player or support EVO combinations.
 
-### Current Active skills
+Current passives include:
 
-| Active Skill | What it does |
+| Passive | Effect |
 |---|---|
-| Pulse Blaster | Starting auto-fire weapon |
-| Orbit Blade | Rotating melee-energy weapon |
-| Arc Coil | Periodic multi-target lightning |
-| Nova Flask | Damage field around the player |
-| Rocket Pod | Explosive seeker missiles |
+| Flux Magnet | Increases pickup range |
+| Vital Matrix | Raises max HP and heals |
+| Ammo Thruster | Increases projectile speed |
+| Reactor Fuel | Increases area size |
+| Nano Regen | Adds HP regeneration |
+| Exo Bracer | Improves duration and orbit speed |
+| Energy Cube | Reduces skill cooldowns |
+| Plasma Catalyst | Increases zone duration |
+| Phase Armor | Reduces incoming damage |
+| Vector Boots | Increases movement speed |
+| Overcharge Core | Increases overall damage |
+| Attack Booster | Improves Pulse Blaster fire rate |
+| Critical Module | Raises critical-hit chance |
+| Repair Nanites | Restores HP when healing is useful |
 
-### Current Passive skills
+Most passives have a Level 5 cap. Repair Nanites behaves more like a situational recovery option than a normal permanent stat tree.
 
-| Passive Skill | Effect |
-|---|---|
-| Ammo Thruster | Faster fire rate |
-| Flux Magnet | Larger pickup range |
-| Reactor Fuel | Stronger area effects |
-| Energy Cube | Faster skill cooldowns |
-| Exo Bracer | Faster orbit weapons |
-| Overcharge Core | Higher projectile damage |
-| Twin Matrix | Additional projectiles |
-| Phase Pierce | Additional projectile piercing |
-| Vector Boots | Faster movement |
-| Vital Matrix | More max HP + healing |
-| Repair Nanites | Restores HP |
+---
 
-## ⚡ EVO Combinations
+# 🌟 EVO system
 
-The game now includes the full combination set shown in the reference chart:
+An EVO requires two conditions:
 
-| Active | Passive | EVO |
-|---|---|---|
-| Boomerang | Hi-Power Magnet | Magnetic Rebounder |
-| Brick | Fitness Guide | 1-ton Iron |
-| Drill Shot | Ammo Thruster | Whistling Arrow |
-| Durian | HE Fuel | Caltrops |
-| Forcefield | Energy Drink | Force Barrier |
-| Guardian | Exo-Bracer | Defender |
-| Laser Launcher | Energy Cube | Death Ray |
-| Lightning Emitter | Energy Cube | Supercell |
-| Modular Mine | Molotov | Inferno Bomb |
-| Modular Mine | Lightning Emitter | Thunderbolt Bomb |
-| Molotov | Oil Bond | Fuel Barrel |
-| Moonshade Slash | Ronin Oyoroi | Moonhalo Slash |
-| RPG | HE Fuel | Sharkmaw Gun |
-| Soccer Ball | Sports Shoes | Quantum Ball |
+1. The matching active weapon must reach **Level 5**.
+2. The matching passive must be owned.
 
-## 💎 Faster EXP
+Examples of V3 EVOs include:
 
-Enemy EXP drops are now **1.5× higher**:
+- Rift Disc → **Singularity Disc**
+- Gravity Brick → **Titan Block**
+- Ion Drill → **Rail Drill**
+- Spiked Core → **Nova Core**
+- Phase Field → **Aegis Field**
+- Orbit Guard → **Rift Sentinel**
+- Prism Lance → **Event Horizon Lance**
+- Arc Conductor → **Riftstorm**
+- Rift Mine → **Sun Mine**
+- Plasma Pool → **Starfire Pool**
+- Crescent Wave → **Eclipse Wave**
+- Void Missile → **Nova Warhead**
+- Kinetic Orb → **Quantum Orb**
 
-- Normal enemy: **1.5 EXP** instead of 1
-- Boss EXP gem: **4.5 EXP** instead of 3
+In V3, EVOs are not just names displayed on screen. The evolved state is checked by the weapon logic and changes actual properties such as damage, projectile count, attack pattern, radius, cooldown, or visuals.
 
-This makes level-ups arrive faster and gives the larger skill pool enough choices during a run.
+---
 
-## 🧱 Project Structure
+# 🛠️ How I built Neon Rift Survivor
+
+This section explains the main development process and the systems behind the game.
+
+## 1. I started with a full-screen Canvas
+
+The game uses a normal `<canvas>` element as the main play area.
+
+JavaScript gets the 2D rendering context:
+
+```js
+const c = document.querySelector('#game');
+const x = c.getContext('2d');
+```
+
+The canvas is resized whenever the browser window changes size. I also account for device pixel ratio so the game does not look unnecessarily blurry on high-resolution displays.
+
+To avoid extremely large rendering buffers on high-DPI phones, the device pixel ratio is capped at `2`.
+
+```js
+dpr = Math.min(devicePixelRatio || 1, 2);
+```
+
+This is a balance between sharp visuals and performance.
+
+---
+
+## 2. I built a real-time game loop
+
+The engine runs with `requestAnimationFrame()`.
+
+The browser calls the loop repeatedly, and the game calculates `dt` — delta time — which is the amount of time since the previous frame.
+
+The update side handles gameplay:
+
+- player movement
+- spawning
+- shooting
+- skills
+- enemies
+- collisions
+- XP
+- particles
+- game-over checks
+
+The draw side renders the newest state to the Canvas.
+
+Conceptually the loop works like this:
+
+```js
+function loop(now) {
+  update(dt);
+  draw();
+  requestAnimationFrame(loop);
+}
+```
+
+Using delta time instead of moving objects by a fixed number of pixels per frame helps movement stay more consistent when FPS changes.
+
+I also cap large frame gaps so switching tabs or hitting a temporary lag spike does not cause enemies and projectiles to jump huge distances in one update.
+
+---
+
+## 3. I created a game-state system
+
+Earlier versions relied mainly on simple `running` and `paused` booleans. That made it possible for states to conflict.
+
+V3 uses explicit states:
+
+```js
+const STATES = Object.freeze({
+  MENU: 'menu',
+  PLAYING: 'playing',
+  PAUSED: 'paused',
+  LEVEL: 'level',
+  GAMEOVER: 'gameover'
+});
+```
+
+This makes the rules clearer.
+
+For example, `Esc` only switches between `PLAYING` and `PAUSED`. It cannot unpause a game that is currently waiting for a level-up selection.
+
+This is one of the most important architectural changes in V3 because it prevents different screens from fighting over the same pause flag.
+
+---
+
+## 4. I added desktop and mobile movement
+
+Keyboard movement checks WASD and Arrow Key state every update.
+
+The direction is normalized before movement is applied. This prevents diagonal movement from being faster than horizontal or vertical movement.
+
+For mobile, Pointer Events create a lightweight virtual joystick:
+
+- `pointerdown` stores the starting position
+- `pointermove` tracks the current drag position
+- the difference between them becomes the movement direction
+- `pointerup` and `pointercancel` stop movement
+
+The joystick is drawn directly on the Canvas so no external mobile-control library is required.
+
+---
+
+## 5. I built enemy spawning and scaling
+
+Enemies spawn outside the visible play area and move toward the player using an angle calculated with `Math.atan2()`.
+
+Different enemy types use different combinations of:
+
+- radius
+- HP
+- movement speed
+- visual color
+- damage
+
+Difficulty values are multiplied into the enemy stats, and time-based scaling makes later enemies stronger than early enemies.
+
+Bosses use the same overall entity system but have much larger HP, size, damage, and visual treatment.
+
+The boss timer begins at 60 seconds and schedules later boss encounters as the run continues.
+
+---
+
+## 6. I built automatic targeting and shooting
+
+The player does not manually aim the main weapon.
+
+The engine searches for the nearest enemy, calculates an angle from the player to that enemy, and creates a projectile with velocity based on that direction.
+
+This lets the player focus on positioning and upgrade decisions instead of mouse aiming.
+
+Projectile objects store values such as:
+
+- position
+- velocity
+- radius
+- remaining life
+- damage
+- piercing count
+- projectile type
+
+Weapon upgrades modify those values before or while projectiles are created.
+
+---
+
+## 7. I fixed piercing collision behavior in V3
+
+One of the biggest bugs in the previous engine was caused by piercing projectiles.
+
+A projectile could remain inside the same enemy for several frames. Because collision detection runs every frame, that projectile could repeatedly damage the same target before leaving its hitbox.
+
+V3 gives enemies unique IDs and lets projectiles remember targets they already hit.
+
+That means a piercing projectile can continue through multiple enemies, but it cannot repeatedly apply full impact damage to the same enemy every frame.
+
+This made weapon damage much more predictable and made balancing easier.
+
+---
+
+## 8. I separated different combat cooldowns
+
+The previous build reused one enemy cooldown value for more than one purpose.
+
+That created unexpected interactions between:
+
+- enemy contact damage against the player
+- Orbit Guard hitting an enemy
+
+V3 separates those concepts so defensive orbit hits do not accidentally control whether an enemy is allowed to damage the player.
+
+This is a small internal change that makes combat behavior much more reliable.
+
+---
+
+## 9. I built XP, gems, and level-ups
+
+When an enemy dies, it creates XP/energy drops.
+
+The player has a pickup radius controlled by the magnet stat. When a gem enters that radius, it accelerates toward the player.
+
+When collected:
+
+```text
+XP increases → XP requirement is checked → player levels up → gameplay enters LEVEL state
+```
+
+The level-up screen then creates three randomized upgrade choices.
+
+After the player chooses one, the upgrade is applied and gameplay resumes.
+
+The XP requirement increases after each level so progression gradually slows as the run continues.
+
+---
+
+## 10. I designed the upgrade pool
+
+V3 tracks two important values:
+
+```text
+owned[skill]
+levels[skill]
+```
+
+`owned` answers whether the player has a skill at all.
+
+`levels` tracks how many times it has been upgraded.
+
+Active weapons and most passives have a maximum level. Once a skill reaches its cap, it is removed from normal randomized upgrade choices.
+
+This prevents the game from offering upgrades that no longer do anything.
+
+Repair Nanites is handled differently because it is a healing utility choice and should only be useful when the player is actually missing enough HP.
+
+---
+
+## 11. I rebuilt EVO progression
+
+The first version of EVOs mostly increased hidden weapon levels.
+
+For V3 I changed the design so an EVO has a real evolved state.
+
+The game checks whether:
+
+- the active is Level 5
+- the required passive is owned
+- that EVO has not already been unlocked
+
+If all conditions are true, the EVO is stored in the evolved state and an on-screen announcement appears.
+
+Weapon logic can then ask whether its EVO is active and use a stronger pattern.
+
+This makes EVOs feel like transformations rather than invisible stat bonuses.
+
+---
+
+## 12. I made cooldown upgrades stack correctly
+
+Energy Cube used to shorten the current timers, but future cooldown calculations still used only a fixed value.
+
+V3 gives the player a persistent cooldown multiplier:
+
+```js
+cooldownMult: 1
+```
+
+Each Energy Cube upgrade modifies that multiplier:
+
+```js
+p.cooldownMult *= 0.88;
+```
+
+Skill cooldown calculations use the current multiplier, so repeated Energy Cube upgrades continue to matter.
+
+---
+
+## 13. I added persistent settings and records
+
+The game uses browser `localStorage` for lightweight persistence.
+
+It stores things such as:
+
+- selected game mode
+- Custom difficulty settings
+- per-mode best scores
+
+Access is wrapped in safe helper functions so the game can continue even if storage is unavailable.
+
+No account, database, or server is required.
+
+---
+
+## 14. I added performance safeguards
+
+Canvas games can become expensive when every frame checks many objects against many other objects.
+
+For example, projectile collision is roughly affected by:
+
+```text
+number of bullets × number of enemies
+```
+
+If both arrays grow without limits, a long run can become increasingly expensive.
+
+V3 uses caps for several object types and reduces unnecessary growth.
+
+XP is also allowed to merge when the gem count becomes high instead of spawning unlimited individual objects.
+
+This is not a full spatial-partitioning engine, but it is a practical optimization for the current scope of the project.
+
+A future version could add a spatial hash/grid if enemy counts become much larger.
+
+---
+
+## 15. I built the UI separately from the game world
+
+The actual arena is rendered on Canvas, but menus and HUD elements use normal HTML and CSS.
+
+This makes it easier to create:
+
+- difficulty buttons
+- sliders
+- health/XP bars
+- level-up choices
+- game-over screen
+- loadout display
+- pause indicator
+
+Using HTML for menus also makes responsive layout much easier than drawing every menu element manually on Canvas.
+
+---
+
+## 16. I deployed it as a static website
+
+Neon Rift Survivor does not require:
+
+- Node.js on the server
+- a database
+- authentication
+- paid hosting infrastructure
+
+The browser runs the game locally after the static files are downloaded.
+
+Netlify only needs to serve the files from the repository.
+
+The included `netlify.toml` sets the publish directory and basic response headers.
+
+This keeps hosting simple and lets GitHub updates deploy automatically when Netlify is connected to the repository.
+
+---
+
+# 🧱 Project architecture
 
 ```text
 Neon-Rift-Survivor/
 ├── index.html
+│   └── Page structure, Canvas, HUD, menus, level-up UI
+│
 ├── styles.css
+│   └── Base responsive neon UI styles
+│
+├── v3.css
+│   └── V3-specific HUD/loadout/pause additions
+│
 ├── src/
-│   └── game.js
+│   ├── game.js
+│   │   └── Previous engine retained for project history
+│   │
+│   └── game-v3.js
+│       ├── Canvas setup
+│       ├── Game state
+│       ├── Input
+│       ├── Difficulty
+│       ├── Player stats
+│       ├── Weapons and passives
+│       ├── EVO logic
+│       ├── Enemy spawning
+│       ├── Collision and damage
+│       ├── XP and level-ups
+│       ├── Rendering
+│       ├── Performance limits
+│       └── localStorage persistence
+│
 ├── netlify.toml
+│   └── Static hosting configuration and headers
+│
+├── CHANGELOG.md
+│   └── Version changes
+│
 ├── LICENSE
 └── README.md
 ```
 
-### What each file does
+---
 
-- **index.html** — game page, HUD, menus, level-up screen, and game-over UI.
-- **styles.css** — responsive neon interface, menus, HUD, buttons, and mobile styles.
-- **src/game.js** — game loop, player movement, enemies, collisions, combat, XP, upgrades, bosses, particles, touch controls, and saving.
-- **netlify.toml** — Netlify publishing and security-header configuration.
-- **LICENSE** — MIT open-source license.
-- **README.md** — project documentation.
+# 🧰 Tech stack
 
-## 🛠️ How It Was Made — Step by Step
+### HTML5
+Used for the page structure, Canvas, HUD, buttons, menus, range sliders, and overlays.
 
-### 1. Create the game shell
+### CSS3
+Used for the neon interface, responsive menus, mobile layout, HUD styling, effects, and transitions.
 
-The project starts with a full-screen HTML5 `canvas` plus HTML overlays for the HUD, start menu, level-up choices, and game-over screen.
+### Vanilla JavaScript
+Used for the complete game engine and gameplay logic.
 
-### 2. Build the visual system
+### Canvas 2D API
+Used for:
 
-CSS provides the dark sci-fi theme, neon glow effects, responsive menus, HP/XP bars, upgrade cards, and mobile-friendly layout.
+- arena rendering
+- player
+- enemies
+- projectiles
+- gems
+- zones
+- mines
+- particles
+- virtual joystick
+- weapon effects
 
-### 3. Create the game loop
+### Web Pointer Events
+Used for touchscreen/mobile controls.
 
-The engine uses:
+### localStorage
+Used for local difficulty settings and best scores.
 
-```js
-requestAnimationFrame(loop)
-```
+### Netlify
+Used to host the static site.
 
-Each frame calculates elapsed time, updates the world, then renders the latest state.
+---
 
-### 4. Add player movement
+# 🤔 Why I used vanilla JavaScript instead of a game engine
 
-Keyboard state is tracked for WASD / arrow-key movement. Pointer events create a virtual joystick for phones and tablets.
+I wanted this project to teach me the fundamentals instead of hiding them behind an engine.
 
-### 5. Add enemy spawning
+Using vanilla JavaScript forced me to build and understand systems such as:
 
-Enemies spawn outside the visible play area and move toward the player. Spawn frequency increases over time.
+- delta-time movement
+- rendering order
+- state management
+- collision detection
+- entity arrays
+- object lifetimes
+- automatic targeting
+- procedural spawning
+- upgrade pools
+- persistent browser storage
+- touch input
+- responsive game UI
 
-### 6. Build automatic combat
+A larger future project could benefit from an engine such as Godot, Unity, or Unreal Engine, but vanilla JavaScript is a good fit for this version because the game is lightweight, easy to host, and easy to open in any modern browser.
 
-The game finds the closest enemy and automatically fires at it. Projectile behavior is affected by damage, speed, multi-shot, and piercing stats.
+---
 
-### 7. Add collision and damage
+# 📈 What I learned from V1 → V3
 
-Distance-based collision checks handle:
-- projectile → enemy hits
-- orbit weapon → enemy hits
-- enemy → player contact
-- player → XP collection
+One of the biggest lessons from this project is that getting a feature working once is different from making it reliable.
 
-### 8. Add XP and leveling
+Earlier versions proved the main idea:
 
-Defeated enemies drop energy gems. Once enough XP is collected, the game pauses and displays three randomized upgrades.
+- movement worked
+- enemies spawned
+- auto-fire worked
+- XP and upgrades worked
+- bosses worked
 
-### 9. Add bosses
+V3 focused more on engineering quality:
 
-A larger high-HP enemy appears every 60 seconds. Bosses deal more contact damage and release substantially more XP.
+- separating game states instead of relying on overlapping booleans
+- preventing one collision from being processed repeatedly
+- making upgrades match what the UI promises
+- validating saved data before using it
+- preventing unlimited object growth
+- making progression rules explicit
+- keeping old code for project history while developing a new engine version
 
-### 10. Add particles and feedback
+That process made the project much stronger than simply adding more weapons or visual effects.
 
-Small particles, glow, enemy health bars, projectile effects, and responsive HUD updates make combat easier to read.
+---
 
-### 11. Add persistence
-
-The best kill count is stored in the browser using:
-
-```js
-localStorage
-```
-
-### 12. Add game modes and custom balancing
-
-Difficulty presets modify real gameplay values such as enemy HP, movement speed, spawn frequency, boss strength, player damage, XP gain, and starting HP. Custom settings are stored locally in the browser.
-
-### 13. Prepare deployment
-
-The game is completely static, so it can be deployed directly on Netlify without Node.js, a server, or a database.
-
-## 💻 Run Locally
+# 💻 Run locally
 
 ### Option 1 — Open directly
 
-Download the project and open:
+Clone or download the repository and open:
 
 ```text
 index.html
@@ -246,106 +711,85 @@ index.html
 
 in a modern browser.
 
-### Option 2 — Local server
+### Option 2 — Run a local server
 
-From the project folder:
+From the project directory:
 
 ```bash
 python -m http.server 8080
 ```
 
-Then visit:
+Then open:
 
 ```text
 http://localhost:8080
 ```
 
-## 🚀 Publish to Netlify from GitHub
+---
 
-This is the recommended setup because future GitHub updates can deploy automatically.
+# 🚀 Deploy with Netlify
 
-1. Sign in to **Netlify**.
-2. Choose **Add new project**.
-3. Choose **Import an existing project**.
-4. Select **GitHub**.
-5. Authorize GitHub if Netlify asks.
-6. Select **Neon-Rift-Survivor**.
-7. Leave the **Build command** empty.
-8. Use **.** as the publish directory if Netlify asks for one.
-9. Click **Deploy**.
-10. Netlify will give the game a public `.netlify.app` address.
-11. Open **Domain management** if you want to rename the generated Netlify subdomain.
+The project is fully static.
 
-The included `netlify.toml` already sets the publish directory and basic security headers.
+1. Sign in to Netlify.
+2. Add a new project from GitHub.
+3. Select `Neon-Rift-Survivor`.
+4. Leave the build command empty.
+5. Use `.` as the publish directory if Netlify asks for one.
+6. Deploy.
 
-### Updating the live game
+After GitHub is connected, future commits can automatically trigger new Netlify deployments.
 
-After the GitHub repository is connected to Netlify:
+---
 
-```text
-Edit code → Commit / push to GitHub → Netlify automatically redeploys
-```
+# 🗺️ Roadmap
 
-## 📦 Manual Netlify Deployment
+Possible future upgrades:
 
-You can also deploy without connecting GitHub:
-
-1. Download this repository as a ZIP.
-2. Extract it.
-3. Open Netlify.
-4. Use Netlify's manual deploy / drag-and-drop area.
-5. Drop the project folder containing `index.html`.
-6. Netlify publishes the game.
-
-## 🧰 Tech Stack
-
-- **HTML5**
-- **CSS3**
-- **JavaScript ES6+**
-- **Canvas 2D API**
-- **Web Pointer Events**
-- **localStorage**
-- **Netlify**
-
-### Why no Java or C++?
-
-This version runs directly in a browser. HTML, CSS, and JavaScript are sufficient for the current engine, which keeps the project lightweight and makes deployment extremely simple.
-
-## 🗺️ Roadmap
-
-Potential V2 improvements:
-
-- [x] Weapon evolution combinations
-- [ ] More enemy classes
-- [ ] Ranged enemies
-- [ ] More bosses with unique attacks
-- [ ] Treasure chests
+- [ ] Ranged enemy classes
+- [ ] Bosses with unique attacks and multiple phases
+- [ ] Treasure / reward drops
 - [ ] Character selection
-- [ ] Permanent progression
+- [ ] Permanent progression between runs
 - [ ] Achievements
-- [ ] Sound effects and music controls
 - [ ] Multiple arenas
-- [x] Difficulty modes
+- [ ] Sound effects
+- [ ] Music and volume controls
+- [ ] Accessibility options
 - [ ] PWA / offline installation
-- [ ] Online leaderboard
-- [x] Difficulty / game-mode settings
-- [ ] Full audio & accessibility settings
 - [ ] Gamepad support
+- [ ] Better spatial collision optimization
+- [ ] Optional online leaderboard
+- [ ] More original weapons and EVOs
+- [ ] More visual effects and screen feedback
 
-## 🤝 Contributing
+---
 
-Ideas, bug reports, and improvements are welcome through GitHub Issues and Pull Requests.
+# 📌 Version history
 
-## 📄 License
+### V1
+Built the first playable survival loop: movement, enemies, auto-fire, collisions, XP, level-ups, and basic upgrades.
 
-Released under the **MIT License**. See [LICENSE](LICENSE).
+### V2
+Expanded the game with more weapons, passives, EVO combinations, difficulty presets, Custom mode, bosses, mobile improvements, and a larger README/project presentation.
+
+### V3
+Reworked core systems for reliability and progression: explicit game states, collision fixes, real Level 1–5 weapon scaling, meaningful EVO behavior, per-mode records, validated Custom settings, loadout UI, performance limits, and a more original Neon Rift weapon identity.
+
+See [`CHANGELOG.md`](CHANGELOG.md) for the V3 change list.
+
+---
+
+# 📄 License
+
+Released under the **MIT License**. See [`LICENSE`](LICENSE).
 
 ---
 
 <div align="center">
 
-### Built with HTML, CSS, JavaScript, and Canvas
+### Built to learn game development from the systems up.
 
-**Neon Rift Survivor** • 2026
+**Neon Rift Survivor V3** • HTML5 Canvas • CSS • Vanilla JavaScript • 2026
 
 </div>
