@@ -8,7 +8,7 @@
     if(A.ctx)return A.ctx;
     const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return null;
     A.ctx=new AC();A.master=A.ctx.createGain();A.master.connect(A.ctx.destination);
-    A.musicGain=A.ctx.createGain();A.musicGain.connect(A.master);
+    A.musicGain=A.ctx.createGain();A.musicGain.connect(A.ctx.destination);
     syncAudio();return A.ctx;
   }
   function syncAudio(){
