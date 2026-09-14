@@ -1,0 +1,11 @@
+const fs=require('fs');
+const mustFiles=['index.html','v4.css','manifest.webmanifest','sw.js','assets/v4-icon.svg','src/v4/config.js','src/v4/audio-vfx.js','src/v4/gameplay.js','src/v4/meta.js','src/v4/rarity-patch.js'];
+const missing=mustFiles.filter(f=>!fs.existsSync(f));
+if(missing.length)throw new Error('Missing V4 files: '+missing.join(', '));
+const html=fs.readFileSync('index.html','utf8');
+for(const token of ['V4','manifest.webmanifest','v4.css','src/v4/config.js','src/v4/audio-vfx.js','src/v4/gameplay.js','src/v4/meta.js','src/v4/rarity-patch.js'])if(!html.includes(token))throw new Error('index.html missing '+token);
+const cfg=fs.readFileSync('src/v4/config.js','utf8');
+for(const token of ['nova','titan','volt','ghost','forge','neon-city','void-factory','frozen-rift','magma-core','final-rift','leaderboards','progression'])if(!cfg.includes(token))throw new Error('config missing '+token);
+const game=fs.readFileSync('src/v4/gameplay.js','utf8');
+for(const token of ['expedition','daily','ascension','queueChest','addLeaderboard','finishRun','updateHazards','updateUltimateSynergies'])if(!game.includes(token))throw new Error('gameplay missing '+token);
+console.log('V4 static integration checks passed.');
