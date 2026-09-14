@@ -103,17 +103,17 @@
       if(h.kind==='laser'){const d=h.axis==='x'?Math.abs(p.x-h.pos):Math.abs(p.y-h.pos);hit=d<18;}
       else hit=Math.hypot(p.x-h.x,p.y-h.y)<h.r+p.r;
       if(hit){
-        if(h.kind==='frost'){p.v4Frost=.25;p.v4FrostTime=.35;}
+        if(h.kind==='frost'){if(!p.v4FrostBase)p.v4FrostBase=p.speed;p.v4Frost=.25;p.v4FrostTime=.45;p.speed=p.v4FrostBase*.75;}
         else if(h.kind==='anomaly'){p.hp-=5*dt;}
         else p.hp-=(h.kind==='magma'?12:9)*dt;
       }
     }
     R.hazards=R.hazards.filter(h=>h.life>0);
-    if(p.v4FrostTime>0){p.v4FrostTime-=dt;}else p.v4Frost=0;
+    if(p.v4FrostTime>0){p.v4FrostTime-=dt;}else{p.v4Frost=0;if(p.v4FrostBase){p.speed=p.v4FrostBase;p.v4FrostBase=0;}}
   }
 
-  function addBossAttack(e){
-    if(!e?.v4Boss)return;e.v4Attack-=.016;
+  function addBossAttack(e,dt){
+    if(!e?.v4Boss)return;e.v4Attack-=dt;
     if(e.v4Attack>0)return;
     const a=arena();
     if(a.hazard==='magma')for(let i=0;i<3;i++)R.hazards.push({kind:'magma',x:p.x+(Math.random()-.5)*180,y:p.y+(Math.random()-.5)*180,r:54,warn:.75,active:1.4,life:2.15});
@@ -139,6 +139,14 @@
   function updateShield(dt){
     if(!p.v4ShieldMax)return;p.v4ShieldDelay=(p.v4ShieldDelay||0)-dt;
     if(p.v4ShieldDelay<=0&&p.v4Shield<p.v4ShieldMax)p.v4Shield=Math.min(p.v4ShieldMax,p.v4Shield+2.2*dt);
+  }
+
+  function mitigateBaseDamage(before){
+    if(before==null||p.hp>=before)return;
+    const lost=before-p.hp;
+    p.v4ShieldDelay=2.2;
+    if(Math.random()<Math.min(.45,p.v4Dodge||0)){p.hp=before;V4.fx?.text(p.x,p.y,'DODGE','#9ef');return;}
+    if((p.v4Shield||0)>0){const block=Math.min(p.v4Shield,lost);p.v4Shield-=block;p.hp=Math.min(p.max,p.hp+block);if(block>0)V4.fx?.text(p.x,p.y,`-${Math.ceil(block)} SHIELD`,'#76f4ff');}
   }
 
   function statusSystem(dt,beforeHp){
@@ -225,9 +233,10 @@
   update=function(dt){
     const was=state,beforeEnemy=new Map(enemies.map(e=>[e.id,{id:e.id,x:e.x,y:e.y,hp:e.hp,archetype:e.archetype,v4Elite:e.v4Elite,v4Boss:e.v4Boss}]));const hpBefore=new Map(enemies.map(e=>[e.id,e.hp]));hpBefore.player=p.hp;
     pollGamepad();const v=updateBefore(dt);
+    if(was===STATES.PLAYING&&state!==STATES.GAMEOVER)mitigateBaseDamage(hpBefore.player);
     if(was===STATES.PLAYING&&state===STATES.GAMEOVER&&!run?.finished){finishRun('defeat');return v;}
     if(state!==STATES.PLAYING){lastState=state;return v;}
-    for(const e of enemies){tagV4Enemy(e);if(e.v4Boss)addBossAttack(e);if(e.v4Regen)e.hp=Math.min(e.max,e.hp+e.max*e.v4Regen*dt);}
+    for(const e of enemies){tagV4Enemy(e);if(e.v4Boss)addBossAttack(e,dt);if(e.v4Regen)e.hp=Math.min(e.max,e.hp+e.max*e.v4Regen*dt);}
     const bossNow=enemies.filter(e=>e.v4Boss&&e.hp>0);const bossName=document.querySelector('#bossName');if(bossName&&bossNow.length)bossName.textContent=bossNow.length>1?`${arena().boss} ×${bossNow.length}`:arena().boss;
     removedEnemies(beforeEnemy);updateHazards(dt);updateHostile(dt);updateShield(dt);statusSystem(dt,hpBefore);updateUltimateSynergies();V4.fx?.update(dt);checkMission();
     if((p.v4Frost||0)>0){p.x+=(Math.random()-.5)*.05;}
