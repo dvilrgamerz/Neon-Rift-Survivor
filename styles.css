@@ -49,8 +49,26 @@ canvas{display:block;width:100%;height:100%;touch-action:none}
 .mode-note{margin:-5px 0 14px;color:#7184ad;font-size:12px}
 .mode-btn.active{outline:2px solid #4feaff55;outline-offset:2px}
 @media(max-width:600px){
- .overlay{align-items:start;overflow-y:auto;overflow-x:hidden;padding:12px;touch-action:pan-y;overscroll-behavior-y:contain;-webkit-overflow-scrolling:touch}
- .overlay .card{margin:auto 0;max-height:none;touch-action:pan-y}
- .custom-settings{padding-bottom:4px}
- .mode-panel{max-height:none;overflow:visible}
+  html,body{overscroll-behavior:none}
+  .overlay{
+    display:block;
+    overflow-y:scroll;
+    overflow-x:hidden;
+    -webkit-overflow-scrolling:touch;
+    touch-action:pan-y;
+    overscroll-behavior-y:contain;
+    padding:12px 12px max(28px,env(safe-area-inset-bottom));
+  }
+  .overlay>.card{
+    display:block;
+    margin:0 auto;
+    width:min(680px,100%);
+    max-height:none;
+    min-height:max-content;
+  }
+  .overlay button,.overlay input,.overlay label,.overlay .mode-panel,.overlay .mode-grid{
+    touch-action:pan-y;
+  }
+  .custom-settings{padding-bottom:4px}
+  .mode-panel{max-height:none;overflow:visible}
 }
