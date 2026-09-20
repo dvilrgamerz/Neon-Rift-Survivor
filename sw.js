@@ -1,9 +1,9 @@
-const CACHE='neon-rift-v4-3';
+const CACHE='neon-rift-v4-4-ui';
 const ASSETS=[
   './','./index.html',
-  './styles.css?v=10','./v3.css?v=3','./v3.1.css?v=2','./v3.3.css?v=1','./v4.css?v=2',
+  './styles.css?v=10','./v3.css?v=3','./v3.1.css?v=2','./v3.3.css?v=1','./v4.css?v=2','./v4.3-ui.css?v=1',
   './src/game-v3.js?v=3','./src/upgrade-v3.1.js?v=2','./src/v3.3.js?v=1',
-  './src/v4/config.js?v=1','./src/v4/audio-vfx.js?v=1','./src/v4/rarity-patch.js?v=1','./src/v4/gameplay.js?v=1','./src/v4/meta.js?v=1',
+  './src/v4/config.js?v=1','./src/v4/audio-vfx.js?v=1','./src/v4/rarity-patch.js?v=1','./src/v4/gameplay.js?v=1','./src/v4/meta.js?v=1','./src/v4/ui-polish.js?v=1',
   './manifest.webmanifest','./assets/v4-icon.svg'
 ];
 self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)).then(()=>self.skipWaiting())));

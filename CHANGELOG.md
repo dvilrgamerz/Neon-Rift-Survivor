@@ -1,5 +1,22 @@
 # Changelog
 
+## V4.3 — Rift Command UI
+
+### Interface
+- Rebuilt the start screen as a cinematic Rift Command Center while preserving the working V4 gameplay flow.
+- Added a live run-summary row for the selected Operator, arena, run mode, and difficulty.
+- Added an animated Rift Gate reactor, clearer feature/status badges, stronger visual hierarchy, and a larger launch action.
+- Restyled difficulty controls, V4 hub navigation, modals, HUD surfaces, upgrade screens, and pause presentation.
+- Improved responsive layouts and touch targets for phones and tablets.
+
+### Accessibility / UX
+- Added stronger keyboard focus states and keyboard activation for the quick loadout cards.
+- Added Escape-to-close behavior for the V4 command modal.
+- Added reduced-motion handling for the new ambient animations.
+- Refreshed the service-worker cache so the new UI assets update cleanly.
+
+# Changelog
+
 ## V4.0 — Rift Expedition
 
 ### Major systems

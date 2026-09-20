@@ -2,10 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="theme-color" content="#050712">
-  <meta name="description" content="Neon Rift Survivor V4 — Rift Expedition: Operators, arenas, progression, multi-phase bosses, Mythic upgrades, leaderboards, VFX/SFX and offline play.">
-  <title>Neon Rift Survivor V4 — Rift Expedition</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#040611">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="Neon Rift Survivor V4.3 — Rift Command: choose an Operator, arena and run mode, build EVOs and Ultimate Synergies, defeat Rift bosses and climb local leaderboards.">
+  <title>Neon Rift Survivor V4.3 — Rift Command</title>
   <link rel="manifest" href="./manifest.webmanifest">
   <link rel="icon" href="./assets/v4-icon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="./styles.css?v=10">
@@ -13,6 +14,7 @@
   <link rel="stylesheet" href="./v3.1.css?v=2">
   <link rel="stylesheet" href="./v3.3.css?v=1">
   <link rel="stylesheet" href="./v4.css?v=2">
+  <link rel="stylesheet" href="./v4.3-ui.css?v=1">
 </head>
 <body>
   <canvas id="game" aria-label="Neon Rift Survivor game canvas"></canvas>
@@ -20,7 +22,7 @@
   <div class="hud">
     <div class="xp"><i id="xp"></i></div>
     <div class="top">
-      <div class="pill">V4</div>
+      <div class="pill">V4.3</div>
       <div class="pill">LV <span id="lv">1</span></div>
       <div class="pill">☠ <span id="kills">0</span></div>
       <div class="pill">⏱ <span id="time">0:00</span></div>
@@ -33,17 +35,58 @@
   </div>
 
   <div id="start" class="overlay">
-    <div class="card">
-      <div class="version-chip">VERSION 4.0 — RIFT EXPEDITION</div>
-      <div class="logo">NEON RIFT <span>SURVIVOR</span></div>
-      <p class="sub">
-        Choose an Operator + Rift Class, enter one of five arenas, build EVOs and Ultimate Synergies, defeat arena bosses, earn Rift Cores, and climb local leaderboards.
-        <br><br>
-        <b>Desktop:</b> WASD / Arrow Keys &nbsp; • &nbsp; <b>Pause:</b> Esc &nbsp; • &nbsp; <b>Mobile:</b> drag anywhere &nbsp; • &nbsp; <b>Controller:</b> left stick
-      </p>
+    <div class="card start-card">
+      <div class="rift-ambient" aria-hidden="true"><i></i><i></i><i></i></div>
+
+      <section class="start-hero">
+        <div class="hero-copy">
+          <div class="version-row">
+            <div class="version-chip">V4.3 — RIFT COMMAND</div>
+            <span class="system-live">RIFT SYSTEM ONLINE</span>
+          </div>
+          <div class="logo">NEON RIFT <span>SURVIVOR</span></div>
+          <p class="sub">
+            Build your Operator, choose a Rift Class, lock an arena and launch a run. Stack EVOs and Ultimate Synergies, hunt Mythic upgrades, defeat multi-phase bosses, earn Rift Cores and push your local leaderboard.
+          </p>
+          <div class="hero-tags" aria-label="Game features">
+            <span>5 OPERATORS</span>
+            <span>5 ARENAS</span>
+            <span>4 RUN MODES</span>
+            <span>OFFLINE READY</span>
+          </div>
+        </div>
+
+        <div class="rift-reactor" aria-hidden="true">
+          <div class="reactor-scan"></div>
+          <div class="reactor-orbit"></div>
+          <div class="reactor-ring"></div>
+          <div class="reactor-core"></div>
+          <div class="reactor-label"><b>RIFT GATE</b>STABLE • READY FOR DEPLOYMENT</div>
+        </div>
+      </section>
+
+      <div class="quick-summary" aria-label="Current run setup">
+        <div class="quick-card" data-open-loadout role="button" tabindex="0">
+          <span>OPERATOR</span>
+          <b id="quickOperator">Loading…</b>
+          <small>Tap Edit Loadout to change</small>
+        </div>
+        <div class="quick-card" data-open-loadout role="button" tabindex="0">
+          <span>ARENA</span>
+          <b id="quickArena">Loading…</b>
+          <small>Hazards and bosses vary by arena</small>
+        </div>
+        <div class="quick-card" data-open-loadout role="button" tabindex="0">
+          <span>RUN MODE</span>
+          <b id="quickRunMode">Loading…</b>
+          <small>Difficulty: <strong id="quickDifficulty">STANDARD</strong></small>
+        </div>
+        <button class="quick-edit" data-open-loadout type="button">EDIT LOADOUT</button>
+      </div>
+
       <div class="mode-panel">
         <div class="mode-header">
-          <span>DIFFICULTY</span>
+          <span>DIFFICULTY PROTOCOL</span>
           <strong id="modeLabel">SELECTED: STANDARD</strong>
         </div>
         <div class="mode-grid">
@@ -67,16 +110,25 @@
           <button class="custom-reset" id="resetCustom" type="button">Reset Custom to Standard</button>
         </div>
       </div>
-      <p class="mode-note">V4 • Operators • 5 arenas • Expedition / Daily / Ascension • Rift Cores • Mythic upgrades • VFX/SFX • Top-10 leaderboards • offline PWA.</p>
-      <button class="btn" id="play">ENTER THE RIFT</button>
+
+      <p class="mode-note">V4.3 • Operators • arenas • Expedition / Daily / Ascension • Rift Cores • Mythic upgrades • VFX/SFX • local Top-10 leaderboards • offline PWA.</p>
+
+      <div class="launch-hints" aria-label="Controls">
+        <span>WASD / ARROWS — MOVE</span>
+        <span>ESC — PAUSE</span>
+        <span>MOBILE — DRAG</span>
+        <span>GAMEPAD — LEFT STICK</span>
+      </div>
+
+      <button class="btn" id="play" type="button">ENTER THE RIFT&nbsp;&nbsp;▶</button>
     </div>
   </div>
 
   <div id="level" class="overlay hide">
     <div class="card">
-      <div class="version-chip">BUILD YOUR RUN • V4</div>
+      <div class="version-chip">BUILD YOUR RUN • V4.3</div>
       <h1>LEVEL UP</h1>
-      <p class="sub">Choose one upgrade. V4 can promote cards to Mythic, while V3.2 rarity, rerolls, EVOs and synergies remain active.</p>
+      <p class="sub">Choose one upgrade. Mythic promotions, V3.2 rarity, rerolls, EVOs and synergies remain active.</p>
       <div class="choices" id="choices"></div>
     </div>
   </div>
@@ -101,5 +153,6 @@
   <script src="./src/v4/rarity-patch.js?v=1"></script>
   <script src="./src/v4/gameplay.js?v=1"></script>
   <script src="./src/v4/meta.js?v=1"></script>
+  <script src="./src/v4/ui-polish.js?v=1"></script>
 </body>
 </html>
