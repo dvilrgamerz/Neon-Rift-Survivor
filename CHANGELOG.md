@@ -15,8 +15,6 @@
 - Added reduced-motion handling for the new ambient animations.
 - Refreshed the service-worker cache so the new UI assets update cleanly.
 
-# Changelog
-
 ## V4.0 — Rift Expedition
 
 ### Major systems
