@@ -1,0 +1,2 @@
+import {json,parse,password,authFetch,limit,safeError} from './_auth.mjs';
+export async function handler(event){try{const token=(event.headers.authorization||'').replace(/^Bearer\s+/i,'');if(!token)return json(401,{error:'Open the password-reset email again.'});await limit(event,'reset-complete',token.slice(-24));await authFetch('/user',{method:'PUT',token,body:{password:password(parse(event).password)}});return json(200,{message:'Password updated. Sign in with the new password.'});}catch(error){return safeError(error);}}

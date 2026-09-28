@@ -1,24 +1,20 @@
 [build]
-  publish = "."
-
+  command = "npm run build"
+  publish = "dist"
+  functions = "netlify/functions"
+[[redirects]]
+  from = "/api/auth/*"
+  to = "/.netlify/functions/auth-:splat"
+  status = 200
 [[headers]]
-  for = "/index.html"
+  for = "/sw.js"
   [headers.values]
-    Cache-Control = "no-cache, no-store, must-revalidate"
-
-[[headers]]
-  for = "/*.css"
-  [headers.values]
-    Cache-Control = "no-cache, no-store, must-revalidate"
-
-[[headers]]
-  for = "/src/*"
-  [headers.values]
-    Cache-Control = "no-cache, no-store, must-revalidate"
-
+    Cache-Control = "no-cache"
 [[headers]]
   for = "/*"
   [headers.values]
-    X-Frame-Options = "SAMEORIGIN"
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=(), payment=()"
+    X-Frame-Options = "DENY"
+    Content-Security-Policy = "default-src 'self'; script-src 'self'; style-src 'self' data:; img-src 'self' data: blob:; connect-src 'self' https://*.supabase.co wss://*.supabase.co; font-src 'self' data:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests"

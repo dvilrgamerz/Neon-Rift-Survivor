@@ -1,0 +1,2 @@
+import {json,parse,email,authFetch,limit,safeError} from './_auth.mjs';
+export async function handler(event){try{const address=email(parse(event).email);await limit(event,'reset',address);const redirect_to=new URL('/.netlify/functions/auth-callback',process.env.URL||'http://localhost').toString();await authFetch('/recover',{body:{email:address,redirect_to}});return json(202,{message:'If the account exists, a reset email is on its way.'});}catch(error){return safeError(error);}}

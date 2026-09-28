@@ -1,0 +1,2 @@
+import {json,authFetch,safeError} from './_auth.mjs';
+export async function handler(event){try{const token=(event.headers.authorization||'').replace(/^Bearer\s+/i,'');if(!token)return json(401,{error:'Sign in before enabling two-factor authentication.'});const data=await authFetch('/factors',{token,body:{factor_type:'totp',friendly_name:'Neon Rift Authenticator'}});return json(200,data);}catch(error){return safeError(error);}}

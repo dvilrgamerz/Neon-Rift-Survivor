@@ -1,0 +1,9 @@
+node_modules/
+dist/
+review-source/
+artifacts/
+*.log
+.nexus-data/
+server-data/
+.env
+.env.*
