@@ -5,7 +5,7 @@ const fs=require('node:fs');
 const path=require('node:path');
 const src=fs.readFileSync(path.join(__dirname,'..','sw.js'),'utf8');
 
-function worker(){
+function worker({offline=false}={}){
   const events={};
   const removed=[];
   const cache={
@@ -24,7 +24,7 @@ function worker(){
     skipWaiting:async()=>{},
     clients:{claim:async()=>{}},
   };
-  vm.runInNewContext(src,{self,caches,Promise,URL,Set,Response:{error:()=>null},fetch:async()=>({ok:true,clone(){return this;}})});
+  vm.runInNewContext(src,{self,caches,Promise,URL,Set,Response:{error:()=>null},fetch:async()=>{if(offline)throw new Error('offline');return {ok:true,clone(){return this;}};}});
   const fetchEvent=(url,mode='cors',method='GET')=>{
     const event={request:{url,method,mode},respondWith(p){this.response=p;}};
     events.fetch(event);
@@ -47,7 +47,7 @@ test('activation retains unrelated web application caches',async()=>{
   assert.deepEqual(removed,['neon-rift-v4-3','neon-rift-v4-4-ui']);
 });
 test('offline game navigation resolves to the installed shell',async()=>{
-  const {fetchEvent}=worker();
+  const {fetchEvent}=worker({offline:true});
   const event=fetchEvent('https://rift.test/','navigate');
-  assert.deepEqual(await event.response,{ok:true,clone:undefined});
+  assert.deepEqual(await event.response,{offline:true});
 });
