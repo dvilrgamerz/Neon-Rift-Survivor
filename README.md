@@ -1,3 +1,8 @@
+<!-- DVILR PROJECT COVER v1 -->
+<p align="center"><img src="./assets/dvilr-project-banner.svg" width="100%" alt="Neon Rift Survivor: Build a loadout. Survive the rift." /></p>
+<p align="center"><a href="https://github.com/dvilrgamerz"><strong>Developer profile</strong></a> · <a href="https://github.com/dvilrgamerz/Neon-Rift-Survivor"><strong>Source</strong></a> · <a href="https://neon-rift-survivor.netlify.app"><strong>Live app ↗</strong></a></p>
+<!-- /DVILR PROJECT COVER -->
+
 <div align="center">
 
 # 🌌 Neon Rift Survivor V4 — Rift Expedition
