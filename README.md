@@ -94,6 +94,8 @@ Caps keep the game from turning permanent progression into an automatic win.
 
 ## 🌟 Upgrade rarity + Mythic
 
+For reproducible picker, EVO, reroll, and mobile QA, see the [Upgrade UI Regression Matrix](docs/UPGRADE_REGRESSION_MATRIX.md) (manual test results must be recorded before release sign-off).
+
 V3.2 still provides the normal card rarity system:
 
 - Common — 45%
