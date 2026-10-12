@@ -57,7 +57,7 @@ If working from a fork, replace the upstream remote with your fork as appropriat
 - [ ] Check reduced-motion/readability behavior for visual effects or boss warnings.
 - [ ] Protect existing `localStorage` progression and versioned save data. Test with a fresh save **and** an existing save (back it up first).
 - [ ] Validate performance and control responsiveness after UI or VFX changes.
-- [ ] Where relevant, use the [upgrade regression matrix](docs/UPGRADE_REGRESSION_MATRIX.md) and note the cases actually run.
+- [ ] Where relevant, use the [upgrade-regression issue #8](https://github.com/dvilrgamerz/Neon-Rift-Survivor/issues/8) and note the cases actually run.
 
 Document checks that were **not** performed rather than claiming a full pass. This project does not have a required `npm test` command at repository root; don't imply that it does.
 
